@@ -1,5 +1,5 @@
 div.terminal {
-  font-family: "DejaVu Sans Mono";
+  font-family: "DejaVu Sans Mono", "Consolas", monospace;
   font-size: 0.9em;
   padding: 4px;
 
@@ -37,7 +37,7 @@ div.terminal .output {
 }
 
 span.directory-inline {
-  font-family: "DejaVu Sans Mono";
+  font-family: "DejaVu Sans Mono", "Consolas", monospace;
   color: #89bdff;
   background-color: #181818;
   padding: 0.2em;

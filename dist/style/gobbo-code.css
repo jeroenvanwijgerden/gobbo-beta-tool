@@ -5,7 +5,7 @@ table.code-block {
   border-collapse: collapse;
   /* border: 1px solid #1a1a1a; */
   border-spacing: 0px;
-  font-family: "DejaVu Sans Mono";
+  font-family: "DejaVu Sans Mono", "Consolas", monospace;
   table-layout: fixed;
 
   /* -o-user-select: text;
@@ -135,7 +135,7 @@ table.code-block tr:last-child td {
 }
 
 div.code-block > .title {
-  font-family: "DejaVu Sans Mono";
+  font-family: "DejaVu Sans Mono", "Consolas", monospace;
   font-size: 0.8em;
   padding: 0.2em;
   padding-left: 0.6em;

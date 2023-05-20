@@ -336,6 +336,8 @@ function build() {
     encoder.encode(filled_template),
   );
 
+  fs.ensureDir(path.join(project_dir, "assets"))
+
   fs.copy(
     path.join(project_dir, "assets"),
     path.join(target_dir, "assets"),
