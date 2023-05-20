@@ -129,82 +129,119 @@
 
   [section [\title Concepts]
 
-    Initially your [directory main.gobbo] looks like this:
+    [section [\title Text and paragraphs]
+      Initially your [directory main.gobbo] looks like this:
 
-    [code-block Hello, world!]
+      [code-block Hello, world!]
 
-    Each line becomes a paragraph (note):
+      Each line becomes a paragraph (later you'll learn there can be exceptions):
 
-    [code-block
-      Hello, world!
-      Good-bye, world!]
+      [code-block
+        Hello, world!
+        Good-bye, world!]
 
-    note: Later learn not always the case.
+      [b Empty lines and indentation do not have any semantic meaning whatsoever.] This frees you to use them to format the document to your preference. The result below is equivalent to the result above:
 
-    ; idea: make an 'important' node, in summary automatically list all important nodes.
-    [b Empty lines and indentation do not have any semantic meaning whatsoever.] This frees you to use them to format the document to your preference.
+      [code-block
+`Hello, world!
 
-    [code-block
-      `Hello, world!
+Good-bye, world!`]
+    ]
 
-            Good-bye, world!`]
+    [section [\title Nodes]
+      You write anything other than plain text as a [i node].
 
-    Gives exactly the same result as example TODO: ref.
+      [code-block `This is [b bold].`]
 
-    You write anything other than plain text as a [i node].
+      A node is always delimited by square brackets. Here [code b] is is the name of the node's type. The other text inside the node is the node's [i content].
 
-    [code-block `This is [b bold].`]
+      After the opening bracket and the node's type name you can put any amount of whitespace (spaces, tabs or newlines).
 
-    A node is always delimited by square brackets. Here [code b] is is the name of the node's type. The other text inside the node is the node's [i content].
+      [code-block `This is [   b
+      
+            bold].`]
 
-    After the opening bracket and the node's type name you can put any amount of whitespace (spaces, tabs or newlines).
+      [b Whitespace at the end of a line has semantic meaning.]
 
-    [code-block `This is [   b
+      [code-block `This is [b bold   ].`]
+
+      is not the same.
+
+      However, 
+
+      [code-block `This is [b bold
+      ].`]
+
+      is the same. Select the text in the code block: the line ends where the text ends. The whitespace between the the text and the closing bracket now happens at the start of a line, which makes it indentation and is thus skipped.
+
+      [code-block `This is [b bold   
+      ].`]
+
+      If you select the text is the above code block you see that now there is whitespace on the line after the text, which causes it to become part of the text. The whitespace on the next line, before the closing bracket, is still considered indentation and skipped.
+    ]    
+
+    [section [\title Text and paragraph nodes]
     
-          bold].`]
+      Actually, any plain text you write is shorthand for a text node. You could also write text nodes explictly. The following two examples are equivalent:
 
-    [b Whitespace at the end of a line has semantic meaning.]
+      [code-block foo]
 
-    [code-block `This is [b bold   ].`]
+      [code-block `[text foo]`]
 
-    is not the same.
+      You can also write paragraph nodes explicitly. The following three examples are all equivalent:
 
-    However, 
+      [code-block foo]
 
-    [code-block `This is [b bold
-    ].`]
+      [code-block `[text foo]`]
 
-    is the same. Select the text in the code block: the line ends where the text ends. The whitespace between the the text and the closing bracket now happens at the start of a line, which makes it indentation and is thus skipped.
+      [code-block `[paragraph [text foo]]`]
 
-    [code-block `This is [b bold   
-    ].`]
+      You might want to have explicit paragraphs if you want a paragraph in content that doesn't have implicit paragraphs.
 
-    If you select the text is the above code block you see that now there is whitespace on the line after the text, which causes it to become part of the text. The whitespace on the next line, before the closing bracket, is still considered indentation and skipped.
+      You might want explicit paragraph or text nodes in case you want to give them properties (see [ref {=sec:properties} section [\number]]).
 
+      Besides plain text being syntactic shorthand for text nodes, the syntax for explicit text also differs from the syntax for other nodes. [ref {=sec:node-text} Section [\number]] discusses this in more detail.
 
-    How nodes are 'in paragraph' or not, how they 'contain paragraph or not'.
+      You don't always want a node (including a text node) to be part of a paragraph. For each node type it must be specified if nodes of that type belong in a paragraph or not. [code text] and [b] nodes belong in a paragraph. A [code section] node, for example, does not belong in a paragraph.
 
+      [code-block
+`Hello
+[b Bye]
+[section]`]
 
+      is equivalent to
 
-    In fact, text you write is shorthand for text nodes. You could also write text nodes explictly. The following two examples are equivalent:
+      [code-block
+`[paragraph Hello]
+[paragraph [b Bye]]
+[section]`]
 
-    [code-block foo]
+      The [code text] and [code b] nodes are placed in a paragraph, the [code section] node is not. [code paragraph] nodes themselves are also not placed in a paragraph.
 
-    [code-block `[text foo]`]
+      If you place a node that doesn't belong in a paragraph on the same line as nodes that do, then the node that doesn't belong in a paragraph still not placed in a paragraph:
 
-    You can also write paragraph nodes explicitly. The following three examples are all equivalent:
+      [code-block
+`Hello [section] Bye`]
 
-    [code-block foo]
+      is equivalent to
 
-    [code-block `[text foo]`]
+      [code-block
+`[paragraph Hello ][section][paragraph \` Bye\`]`]
 
-    [code-block `[paragraph [text foo]]`]
+      The nodes that appear top-level (not nested within other nodes) are implicitly placed into paragraphs. For nodes nested within other nodes, it depends. For each node type it is specified whether or the content for nodes of the type is placed into paragraphs. E.g. for type [code section] content is placed into paragraphs, for [code code-block] it's not:
 
-    You might want to have explicit paragraphs if you want a paragraph in content that doesn't have implicit paragraphs.
+      [code-block
+`[section foo]
+[code-block bar]`]
 
-    You might want explicit paragraph or text nodes in case you want to give them properties (see [ref {=sec:properties} section [\number]]).
+      is equivalent to
 
-    Besides plain text being syntactic shorthand for text nodes, the syntax for explicit text also differs from the syntax for other nodes. [ref {=sec:node-text} Section [\number]] discusses this in more detail.
+      [code-block
+`[section [paragraph foo]]
+[code-block bar]`]
+
+      As a document writer you probably don't have to worry about the 'in paragraph' and 'contains paragraphs' settings of node types. It's more a convenience for for node type creators.
+    ]
 
     [section [\title Escaping]
       Because of the existance of nodes, you can't use the characters `[` and `]` in your plain text. If you want these characters in your document's text, you have to write them as [i escaped text]. Escaped text is delimited by the `\`` character.
@@ -444,24 +481,143 @@
 
     [section [\title Preamble]
     
+      Your document's actual content is provided by nodes and their properties. However, while writing you can make use of some conveniences - mostly to greatly reduce repetitive labor - to specify these nodes and their properties. You do this with preamble.
 
+      As a general rule, you can put preamble [i before] any content: the preamble will then be applied to that content.
+
+      This section's subsections show all four types of preamble and provide more detail on how preamble works.
 
       [section {id=sec:preamble-val} [\title Value]
-        [ref {=sec:macro-val} section [\number]].
+        With [code `<val name value>`] you can bind a property value to a name. You can then place [code.no `<val name>`] anywhere a property value is expected. Lines 2 and 3 are equivalent:
+
+        [code-block
+`<val wikipedia https://en.wikipedia.org>
+[link {=<val wikipedia>} Wikipedia]
+[link {=https://en.wikipedia.org} Wikipedia]`]
+
+        You can use this like a variable in programming, to have ensure multiple nodes have the same property value; if you want to change the property value, you only have to change it in one place.
+
+        Important: all preamble must come before all content! The example below would give an error.
+
+        [code-block
+`Hello, world!
+<val wikipedia https://en.wikipedia.org>
+[link {=<val wikipedia>} Wikipedia]`]
+
+        As you can tell from the syntax coloring, the 'preamble' is actually parsed as plain text. So [code.no `<val wikipedia>`] tries to use the property value bound to the name [code wikipedia], but there is no property value bound to the name [code wikipedia].
+
+        You can also place a bound property value as a text node in your content: see [ref {=sec:macro-val} section [\number]].
       ]
 
       [section [\title Content]
-        [ref {=sec:macro-con} section [\number]].
+        With [code `<con name [content]>`] you can bind content to a name, to later place that bound content somewhere by using a special node: see [ref {=sec:macro-con} section [\number]]. To give you some idea already, lines 2 and 3 are equivalent:
+
+        [code-block
+`<con foo [bar]>
+[con foo]
+bar`]
+
+        You place the bound content between node delimeters, but this is the single exceptional case where node delimeters don't actually specify a node. In the above example, [code bar] is not a node type, but just a plaim text.
+
+        You place [i content] between the node delimeters: this means you can also put preamble there! Below is a nonsensical example just to show it's possible. After you've seen the other types of preamble you'll see some sensical examples. Lines 2 and 3 are equivalent:
+
+        [code-block
+`<con foo [<val bar baz> [code {=<val bar>}]]>
+[con foo]
+[code {=baz}]`]
       ]
 
       [section {id=sec:preamble-cla} [\title Class]
-      
+        With [code `<cla>`] preamble you can make a 'preset package' of properties that you can then apply to a node multiple times.
+
+        Let's say you're writing a document discussing both Gobbo code and Clojure code. For Gobbo code blocks you want Gobbo syntax highlighting and wrapping; for Clojure code blocks you want Clojure syntax highlighting and no wrapping. You can do something like this:
+
+        [code-block
+`<cla .gob code-block {=gobbo wrap}>
+<cla .clj code-block {=gobbo !wrap}>
+
+[code-block.gob some code...]
+[code-block.clj some code...]
+[code-block.gob some code...]
+[code-block.clj some code...]`]
+
+        Without the [code `<cla>`] preamble, you'd have to do something like:
+
+        [code-block
+`[code-block {=gobbo wrap} some code...]
+[code-block {=clojure !wrap} some code...]
+[code-block {=gobbo wrap} some code...]
+[code-block {=clojure !wrap} some code...]`]
+
+        If you try to apply a class to a node but there is no such class for the node's type, you get an error:
+
+        [code-block
+`<cla .gob code-block {=gobbo wrap}>
+[section.gob] ; error`]
+
+        The [code `<cla>`] preamble can give errors itself. Properties specified in the [code `<cla>`] have to be valid for the provided type. Currently the only two ways for properties to be invalid is if you use the main property shorthand for a type that doesn't have a main property, or if you use the main property shorthand and later set the main property explicitly as well.
+
+        [code-block
+`<cla .foo paragraph {flag}> ; this is fine
+<cla .foo paragraph {=bar}> ; error: "node type 'paragraph' does not have a main property"`]
+
+        [code-block `<cla .gob code {=gobbo language=gobbo}> ; error: "main property 'language' of type 'code' already set"`]
+
+        You can even specify multiple types to create the class for:
+
+        [code-block `<cla .gob code code-block {=gobbo wrap}>`]
+
+        This is fine: both types [code code] and [code code-block] have a main property (both being [code language]); [code wrap] is only truly relevant for [code code-block], but [code code] having the property [code wrap] set doesn't cause an error.
+
+        However, the properties must be applicable to all provided types:
+
+        [code-block `<cla .gob code paragraph {=gobbo wrap}> ; error: "node type 'paragraph' does not have a main property"`]
+
+        [code-block `<cla .foo code link {=bar url=baz}> ; error: "main property 'url' of type 'link' already set"`]
+
+        You can apply any amount of classes to a node (given that the classes exist for the node's type). The classes are applied left-to-right. Lines 3 and 4 are equivalent:
+
+        [code-block
+`<cla .1 text {a=1 b=2}>
+<cla .2 text {    b=3 c=4}>
+[text.1.2]
+[text {a=1 b=3 c=4}]`]
+
+        You can provide both classes and properties to a node. First the classes are applied left-to-right, then the properties. Lines 3 and 4 are equivalent:
+
+        [code-block
+`<cla .1 text {a=1 b=2}>
+<cla .2 text {    b=3 c=4}>
+[text.1.2 {c=5 d=6}]
+[text {a=1 b=3 c=5 d=6}]`]
+
+        You can apply classes wherever you would supply properties. This includes in [code `<cla>`] preamble itself! As with a node, the classes should exist for the provided types, the classes are applied left-to-right, then the properties are applied. Lines 3 and 4 are equivalent:
+
+        [code-block
+`<cla .foo text {a=1 b=2}>
+<cla .bar text .foo {b=3 c=4}>
+[text.bar]
+[text {a=1 b=3 c=4}]`]
+
+        You can [i omit] any node types. This is a wild card, creating the class for all node types for which the class would be valid (not cause an error). Because of the lack of error messaging upon creation of the class, you might be confused as to why a class wasn't created for a node type. So omit node types  at your own risk (you lazy demon).
+
+        In the example below, the class [code `.foo`] is created for type [code code] but not for type [code text] because [code text] doesn't have a main property.
+
+        [code-block
+`<cla .foo {=bar}>
+[code.foo]
+; all good
+[text.foo]
+; error: "no class 'foo' for type 'text'"`]
       ]
 
       [section {id=sec:preamble-def} [\title Default]
       
       ]
 
+      [section [\title Scope]
+      
+      ]
     ]
 
     [section [\title Macros]
