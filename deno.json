@@ -1,0 +1,7 @@
+{
+  "tasks": {
+    "rebuild" : "watchexec -w doc/ 'deno task build'",
+    "preview": "browser-sync start -s --ss './dist' -w -f './dist'",
+    "build": "deno run --allow-read --allow-write src/tool/preview.ts",
+  }
+}

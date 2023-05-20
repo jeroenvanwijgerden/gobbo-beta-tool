@@ -1,0 +1,45 @@
+div.terminal {
+  font-family: "DejaVu Sans Mono";
+  font-size: 0.9em;
+  padding: 4px;
+
+  margin-top: 2em;
+  margin-bottom: 2em;
+
+  background-color: #181818;
+
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  line-break: anywhere;
+
+  line-height: 1.2;
+}
+
+div.terminal .preamble {
+  color: #bbb
+}
+
+div.terminal .user {
+  color: #a4dbb3;
+}
+
+div.terminal .directory {
+  color: #89bdff;
+}
+
+div.terminal .input {
+  font-weight: bold;
+  margin-left: 0.8em;
+}
+
+div.terminal .output {
+  margin-top: 0.2em;
+}
+
+span.directory-inline {
+  font-family: "DejaVu Sans Mono";
+  color: #89bdff;
+  background-color: #181818;
+  padding: 0.2em;
+  font-size: 0.9em;
+}

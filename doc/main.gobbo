@@ -1,0 +1,644 @@
+<def code code-block {=gobbo}>
+<def code-block {line-numbers wrap}>
+<cla .no code code-block {=none}>
+
+[section [\title Introduction]]
+
+  In this introduction I briefly go over what Gobbo is and how to contribute as a beta tester.
+
+  [ref {=sec:getting-started} Section [\number]] gets you started. [ref {=sec:writing} Section [\number]] teaches you step by step how to use the available features to write a document. If you want to see a larger, real world example immediately, take a look at the Gobbo code for this very page in [ref {=this-page-in-gobbo} Appendix [\number]].
+
+  Goal of Gobbo project is to .
+
+  First phase of beta is to test the syntax and core functionality. Do this by using an existing tool (the tool I wrote to write this very document). In the next phase focus on the other major aspect of Gobbo: being able to extend tools or create your own tools.
+
+  This document tells you how to get started. If you want to immediately jump to a non-trivial example, I included the Gobbo code of this page in . If you follow the document you will see a buildup of exampels.
+
+  What I would like from you is to actually use the provided tool to write something. If you have no inspiration, you could try to port one of your existing works to Gobbo. While writing your document in Gobbo, please take notes (here I want a note) of what you struggle with, what is intuitive/not intuitive, what you wish you could do, what you tried to do, failed, looked up. Generally anytthing potentially interesting that comes to mind.
+  
+  What you could do is start a thread or text channel in the discord server to write your notes on the fly. That way I and the other beta participants can see and start dicussions.
+
+  Afterwards a reflection: what do you wish you could do, but couldn't or at least couldn't figure out how to do. At some point I'd like to have a live conversation about your experience as well.
+
+   
+
+[section {id=sec:getting-started}
+  <def terminal {=/gobbo-beta-tool/}>
+  
+  [\title Getting started]
+
+  Initial setup, then what you need to do every time you want to start writing. I assume you can use a terminal; if you can't, reach out to me for help.
+
+  [section [\title Initial setup]
+
+    You'll need [length {=list:requirements}] things:
+
+    [list {id=list:requirements}
+      A directory containing both the writing program and your document's project directory.
+
+      A text editor to actually write your document.
+
+      A runtime for the writing program.
+
+      A tool that watches your document's project directory for changes.
+
+      A tool that automatically refreshes the preview of your rendered document.
+    ]
+    
+
+    [section {id=section:directory} [\title Directory]
+      Github or zip in Discord server
+    ]
+
+    [section [\title Text editor]
+      You can use any editor you like, but you can find a [link {=https://marketplace.visualstudio.com/items?itemName=jeroenvanwijgerden.gobbo-lang} Gobbo extension] for [link {=https://code.visualstudio.com/docs/setup/setup-overview} VSCode].
+
+      The extension is still quite limited. It colors escaped text, node and property delimiters ('rainbow' style), can collapse/fold nodes and auto-inserts closing delimeters for brackets and quotes.
+
+      One useful manouvre the extension enables is to select text, press [key `[`] to wrap node delimeters around it, press [key 🠜] and write a node type. I do this e.g. to quickly turn [code text] into [code `[b text]`].
+
+      Eventually I want some powerful language support as shown [link {=https://calva.io/paredit/} here].
+
+      Important: Gobbo syntax is designed under the assumption that you use word wrap while editing. In VSCode the default key binding to toggle word wrap is [key Alt] + [key Z]. I'm looking into having the extension enable word wrap for [directory `.gobbo`] files automatically.
+    ]
+
+    [section [\title Runtime]
+      Deno, install [link {=https://deno.com/manual@v1.33.3/getting_started/installation} here].
+
+      Fetch the tool's dependencies. Go to the tool's directory and run
+      [terminal deno cache deps.ts]
+
+      You might already want to tinker with the tool's code. If so, for VSCode install the Deno extension. Don't forget to [key Ctrl]/[key Cmd] + [key Shift] + [key P] and look for [code Deno: Initialize Workspace Configuration].
+    ]
+
+    [section
+      <def terminal {=~}>
+      
+      [\title Watcher]
+      
+
+      [link {=https://github.com/watchexec/watchexec} Watchexec]. Probably easiest to install with a package manager.
+
+      Windows (using [link {=https://chocolatey.org/install} Chocolatey]):
+      [terminal choco install watchexec]
+
+      OSX (using [link {=https://brew.sh/} Homebrew]):
+      [terminal brew install watchexec]
+
+      [link {=https://github.com/watchexec/watchexec/blob/main/doc/packages.md} Linux]
+
+    ]
+
+    [section [\title Refresh tool]
+      Note: you can use a refresh tool of your own choosing by editing [directory deno.json].
+
+      [link {=https://browsersync.io/} Browsersync].
+
+      It requires Node. [link {=https://nodejs.org/en/download} here].
+
+      After installing Node (which should also install the [code npm] command line tool), run
+      [terminal {=~} npm install -g browser-sync]
+
+      
+    ]
+  ]
+
+  [section [\title Starting to write]
+  
+    Open the [directory doc] directory in a text editor and start editing [directory main.gobbo].
+    
+    In the tool's root directory (so not [directory doc]) run:
+
+    [terminal deno task rebuild]
+
+    This will watch [directory doc] for changes, and when any happen, recompiles your document and places it in the [directory dist] directory.
+
+    In a second terminal run:
+
+    [terminal deno task preview]
+    
+    This serves [directory dist] over HTTP, opens [directory dist/index.html] in a browser and refreshes the page whenever [directory dist] changes.
+    
+    Keep both terminals running while editing!
+
+    If you now edit and save [directory main.gobbo] you see the changes reflected in your browser.
+  ]
+]
+
+[section {id=sec:writing} [\title Writing]
+
+  [section [\title Concepts]
+
+    Initially your [directory main.gobbo] looks like this:
+
+    [code-block Hello, world!]
+
+    Each line becomes a paragraph (note):
+
+    [code-block
+      Hello, world!
+      Good-bye, world!]
+
+    note: Later learn not always the case.
+
+    ; idea: make an 'important' node, in summary automatically list all important nodes.
+    [b Empty lines and indentation do not have any semantic meaning whatsoever.] This frees you to use them to format the document to your preference.
+
+    [code-block
+      `Hello, world!
+
+            Good-bye, world!`]
+
+    Gives exactly the same result as example TODO: ref.
+
+    You write anything other than plain text as a [i node].
+
+    [code-block `This is [b bold].`]
+
+    A node is always delimited by square brackets. Here [code b] is is the name of the node's type. The other text inside the node is the node's [i content].
+
+    After the opening bracket and the node's type name you can put any amount of whitespace (spaces, tabs or newlines).
+
+    [code-block `This is [   b
+    
+          bold].`]
+
+    [b Whitespace at the end of a line has semantic meaning.]
+
+    [code-block `This is [b bold   ].`]
+
+    is not the same.
+
+    However, 
+
+    [code-block `This is [b bold
+    ].`]
+
+    is the same. Select the text in the code block: the line ends where the text ends. The whitespace between the the text and the closing bracket now happens at the start of a line, which makes it indentation and is thus skipped.
+
+    [code-block `This is [b bold   
+    ].`]
+
+    If you select the text is the above code block you see that now there is whitespace on the line after the text, which causes it to become part of the text. The whitespace on the next line, before the closing bracket, is still considered indentation and skipped.
+
+
+    How nodes are 'in paragraph' or not, how they 'contain paragraph or not'.
+
+
+
+    In fact, text you write is shorthand for text nodes. You could also write text nodes explictly. The following two examples are equivalent:
+
+    [code-block foo]
+
+    [code-block `[text foo]`]
+
+    You can also write paragraph nodes explicitly. The following three examples are all equivalent:
+
+    [code-block foo]
+
+    [code-block `[text foo]`]
+
+    [code-block `[paragraph [text foo]]`]
+
+    You might want to have explicit paragraphs if you want a paragraph in content that doesn't have implicit paragraphs.
+
+    You might want explicit paragraph or text nodes in case you want to give them properties (see [ref {=sec:properties} section [\number]]).
+
+    Besides plain text being syntactic shorthand for text nodes, the syntax for explicit text also differs from the syntax for other nodes. [ref {=sec:node-text} Section [\number]] discusses this in more detail.
+
+    [section [\title Escaping]
+      Because of the existance of nodes, you can't use the characters `[` and `]` in your plain text. If you want these characters in your document's text, you have to write them as [i escaped text]. Escaped text is delimited by the `\`` character.
+
+      [code-block `You can't use the characters \`[\` and \`]\` in your plain text.`]
+
+      Because of the existance of escaped text, you can't use the `\`` character in your plain text. If you want this character in your document's text, you have to write it as escaped text and escape it within the escaped text by prepending a \:
+
+      [code-block `You can't use the \`\\\`\` character in your plain text.`]
+
+      You can write a \ character in plain text, but if you want a \ in escaped text you'll have to escape it by prepending it by another \:
+
+      [code-block `[code-block \`You can't use the \\\`\\\\\\\`\\\` character in your plain text.\`]`]
+
+      To write the above example I had to escape the escaped text that escapes escaped text. Look at the code for the previous example in [ref {=this-page-in-gobbo} Appendix [\number]] and sympathize with me.
+
+      [b If you want to escape text, write escaped text: text delimited by `\``.] [b In escaped text you can use the \ character to escape exactly two characters: \ and `\``.] Traditionally you would also escape things like newline characters and tabs. In Gobbo you just actually write the character (e.g. by creating a new line or insterting a tab).
+
+      Like regular text, escaped text is also an implicit text node.
+    ]
+    
+    [section {id=sec:properties} [\title Properties]
+    
+      Many node types allow you to specify properties. Some node types such as [code link] require a property to be specified to even be of any use.
+
+      [code-block `[link {url=en.wikipedia.org} Wikipedia]`]
+
+      To know the available properties and accepted values for a node type you'll have to read the type's documentation.
+
+      Syntactically a property value is text not containing any whitespace or any of these characters: [code.no `\` { } [ ] < >`]. If you want a property value to contain any of these characters (including whitespace), you can also provide escaped text:
+
+      [code-block `[link {url=\`\\\` { } [ ] < >\`}]`]
+
+      In [ref {=sec:preamble-val} section [\number]] you'll learn how to bind property values to a name. You can then use this binding as a property value.
+
+      Below I bind the property value [code gobbo] to the name [code lang] and then use it to specify the [code language] property of two nodes.
+
+      [code-block
+`<val lang gobbo>
+[code-block {language=<val lang>}]
+[code-block {language=<val lang>}]`]
+
+      Multiple property settings are separated by whitespace:
+
+      [code-block `[code-block {language=gobbo line-numbers=true}`]
+
+      There can be whitespace between a name and a value:
+
+      [code-block `[code-block {   language  =    gobbo  line-numbers
+  = 
+      true
+  }`]
+
+      As a convenience, each node type can have exactly one [i main property]. This allows you to specify a value without having to mention the property's name. For type [code link] the main property is [code url], so these two lines are equivalent:
+
+      [code-block
+`[link {url=en.wikipedia.org} Wikipedia]
+[link {=en.wikipedia.org} Wikipedia]`]
+
+      To avoid confusion, if you use both the shorthand and set the main property explicitly, you'll get an informative error when building your document.
+
+      [code-block `[link {=foo url=bar} /* error! */ ]`]
+
+      The shorthand to set the main property must be the first setting. Placing the shorthand non-first is syntactically erroneous:
+
+      [code-block `[code-block {line-numbers=true =gobbo}]`]
+
+      As a convenience, there is a shorthand to set 'flag' properties (that take [code true] or [code false] as a value). These two lines are equivalent:
+
+      [code-block
+`[code-block {line-numbers=true wrap=false}]
+[code-block {line-numbers !wrap}]`]
+      
+      In sections [ref {=sec:preamble-cla} [\number]] and [ref {=sec:preamble-def} [\number]] you'll learn more utilities for setting properties.
+    ]
+
+    [section [\title Global and child types]
+      You've seen [code `[b bold]`], where [code b] is the node's type. [code b] is a [i global] node type, meaning it can be used anywhere: top-level and inside any arbitrary deeply nested node.
+
+      [code-block
+`Some top-level [b bold] text.
+
+[section
+  [section
+    Some nested [b bold] text]]`]
+
+      Indeed, [code section] is also a global node type.
+
+      [code-block
+`[section [\title Foo]
+  [code-block [\title Bar]
+    \`some code\`]]`]
+      
+      Both [code section] and [code code-block] have a child type [code title]. These types are distinct. In any error messaging they would be referred to as [code section\title] and [code code-block\title]. In fact, the above example is a shorthand. Equivalent would be:
+
+      [code-block
+`[section [section\title Foo]
+  [code-block [code-block\title Bar]
+    \`some code\`]]`]
+
+      The main reason I introduced the notion of child types was to introduce a semblence of namespaces. As you'll learn during phase 2 of the beta, node type authors now only have to worry about name clashing within their own node type. Tool authors only have to worry about name clashes in the global namespace.
+
+      Although child types have a namespace effect, you shouldn't assume you can just place child-typed nodes anywhere.
+      
+      [code-block `Can I have a top-level [section\title Section Title]?`]
+
+      In this specific case, no you cannot! You should assume child types can only be used under specific circumstances. You'll read more about the peculiarities of child-typed nodes in [ref {=sec:list-vs-map} section [\number]].
+    ]
+
+    [section {id=sec:list-vs-map} [\title Lists and maps]
+
+      The content of nodes of certain types such as [code b] or [code link] is, straightforwardly, a list of other nodes. Remember that text and escaped text are implicit text nodes. The content of a text node is always a single piece of plain text.
+
+      However, when child-typed nodes are involved chances are that the parent node's content is not a list but a 'map'. A node's content being a list or a map depends on the type of the node's type. To save ourselves a headache: the type of a type is also called a [i kind]. We can thus speak of [i list-kinded] and [i map-kinded] types/nodes.
+
+      When a node has distincts parts to it, it is probably map-kinded. Take a section, for example. 
+
+      [code-block `[section [\title Foo]
+  Bar]`]
+
+      A section has two distinct parts: a title and a body. These distinct parts are specified as child-typed nodes. But hold on: there's a [code `\title`] node, but where's the [code `\body`] node?
+
+      Actually,
+      [code-block `[section [\title Foo]
+  Bar]`]
+  
+      is shorthand for
+      [code-block `[section [\title Foo][\body Bar]]`]
+      We'll come back to this shorthand soon.
+
+      Whereas in a list-kinded node the order of the content in the source directly describes the order of the content in the rendered document, for map-kinded nodes this need not be the case. For example, this would render a document identical to the document rendered by the previous example:
+
+      [code-block `[section [\body Bar][\title Foo]]`]
+
+      For map-kinded nodes, the order of the content is decided by the creator of the node type, not by the author of the document (the one using the node type). A section's title just always comes before its body, sorry not sorry!
+
+      Back to the shorthand. Like with properties, as a convenience, map-kinded types can have a single [i main mapped child type]. The content of a map-kinded node with a main mapped child type will implicitly become the content of a single node of that main type.
+
+      For example, the main mapped child type of the [code section] type is the [code `\body`] type. As such in
+
+      [code-block `[section Foo [b Bar]]`]
+
+      An implicit [code `\body`] node is made with as content the two nodes [code `[text \`Foo \``] and [code `[b [text Bar]]`]. The previous example is equivalent to
+
+      [code-block `[section [\body Foo [b Bar]]]`]
+
+      An exception to this convenience is that nodes that themselves should be mapped (because the parent's type specified their types as 'should be mapped') become mapped to the parent node, having priority over becoming part of the content of the implicit mapped node.
+
+      Let's take another look at
+
+      [code-block `[section [\title Foo]
+  Bar]`]
+
+      When the content of the [code section] node is processed, first a [code `\title`] node is encountered. According to the [code section] type, [code `\title`] nodes should be mapped! So it is taken out and placed in the [code `\title`] bin. Next up is the [code `[text \` Bar\`]`] node. Its type, [code text], is not specified as being mapped, so it becomes part of the implicit [code `\body`] node. All content is now processed: an implicit [code `\body`] node is made with as content a list of the non-mapped nodes of the [code section] parent node, which happens to be that single [code text] node. This implicit [code `\body`] node is placed in the [code `\body`] bin, and the mapping is done.
+
+      You could even place mapped nodes after the implicit node's content and get the same result:
+
+      [code-block
+`[section
+  Bar
+  [\title Foo]]`]
+
+      You could even have mapped nodes anywhere in between the non-mapped nodes:
+
+      [code-block
+`[section
+  Foo
+  [\title Bar]
+  Baz]`]
+
+      is equivalent to
+
+      [code-block
+`[section
+  [\title Bar]
+  [\body Foo
+         Baz]]`]
+
+      A restriction for this convenience is that the main mapped child type [i must] be list-kinded. Indeed, [code section\body] is list-kinded; as it happens, so is [code list\title]. But this restriction is only important when creating your own node types (be patient for phase 2!).
+
+      Another map-kinded type is [code list]. The type [code list] has a single child type, [code `\item`], which is mapped and also specified as the main mapped child type.
+
+      [code-block
+`[list [\item Foo]
+      [\item Bar]
+      [\item Baz]]`]
+
+      In the above example all nodes in the [code list] node's content are of a mapped type: they are all placed in the [code `\list`] bin. Earlier I wrote that for map-kinded nodes, the order of the content is decided by the creator of the type, not the author of the document. Time for some nuance. The creator of the type only decides the order of the mapped child types: first come all the titles, then come all the bodies. The author of the document still decides the order of the content within a mapped type. The a mapped child type's 'bin' in which nodes may or may not be placed is, itself, a list. The mapped nodes are placed in this list in the same order as they are written in the document.
+
+      However, they way non-mapped content in a [code list] node is used to create implicit nodes is different from the way non-mapped content is used to create an implicit node as we've seen for the [code section] type.
+
+      Whereas
+      [code-block
+`[section Foo
+         Bar
+         Baz]`]
+      is equivalent to
+      [code-block
+`[section [\body Foo
+                Bar
+                Baz`]
+
+      an equivalent of
+      [code-block
+`[list Foo
+      Bar
+      Baz]`]
+      would be
+      [code-block
+`[list [\item Foo]
+      [\item Bar]
+      [\item Baz]]`]
+
+      When a map-kinded type specifies a main mapped child type, it must specify whether [i all] non-mapped content is used to create [i a single implicit node], or whether [i each line] of the non-mapped content is used to create an implicit node, resulting in [i an implicit node per line].
+ 
+      To know if a node type is list-kinded or map-kinded, and in case of map-kinded, if it uses all content or a line to create an implicit node, you'll have to familiarize yourself with the node type.
+
+      Like with explicit paragraph and text nodes, you might want to have explicit main mapped child type nodes to give them properties. For example, with list items you might want to do something like this:
+
+      [code-block
+`[list [\item {id=step:eat} Eat
+      Sleep
+      Code
+      Go back to [ref {=step:eat} step [\number]]]]`]
+
+      [list [\item {id=step:eat} Eat]
+            Sleep
+            Code
+            Go back to [ref {=step:eat} step [\number]]]
+
+      The above exampe contains a case where a child type is not mapped. It's not even the child of a map-kinded type. The type [code `\number`] is a child of [code ref], which is list-kinded. Here of the [code `\number`] does absolutely matter relative to the other nodes and should be decided by the author of the document!
+
+      Although this section is dense, the intuition should be simple. There are child types which you should use carefully. Sometimes you can place them anywhere you want (or at all), sometimes not. Sometimes a node's content becomes an implicit node. Sometimes each line becomes an implicit node. It all depends on the node type you're working with, so familiarize yourself!
+      
+      Some closing remarks. It is called '[i mapped] child types', because not all child types need necessarily be mapped. It is called a 'mapped [i child] type', because currently I decided it should only be possible to map child types, not any type.
+    ]
+
+    [section [\title Preamble]
+    
+
+
+      [section {id=sec:preamble-val} [\title Value]
+        [ref {=sec:macro-val} section [\number]].
+      ]
+
+      [section [\title Content]
+        [ref {=sec:macro-con} section [\number]].
+      ]
+
+      [section {id=sec:preamble-cla} [\title Class]
+      
+      ]
+
+      [section {id=sec:preamble-def} [\title Default]
+      
+      ]
+
+    ]
+
+    [section [\title Macros]
+    
+      Macros are a special kind of node. A macro transforms, or 'expands', into lines of nodes. [ref {=sec:macro-preamble} Section [\number]] shows a pitfall of this behavior.
+
+      There is no way to create a macro within a Gobbo file. You can create macros like you create your own node types: in the host langauge. You'll see how to do that in phase 2 of the beta.
+
+      There a are five macros that are hard baked into Gobbo in the sense that they have special syntax. Otherwise the syntax for macros is identical to that of regular nodes.
+      
+      Some of these core macros also have functionality that is impossible to emulate with custom macros. I'll discuss these five macros here.
+
+      [section {id=sec:macro-val} [\title Value]
+        [code-block `<val foo bar> [val foo]`]
+
+        Transforms into a text node with as content the property value bound to the given name. Equivalent to
+
+        [code-block `bar`]
+      ]
+
+      [section {id=sec:macro-con} [\title Content]
+        [code-block `<con foo [bar]> [con foo]`]
+
+        Transforms into the content bound to [code foo], in this case the text node `bar`.
+
+        You can also provide some preamble to the [code con] macro, which will be applied to the bound content.
+
+        [code-block `<con foo [Hello, [con bar]!]>
+[con foo <con bar [baz]>]
+[con foo <con bar [qux]>]`]
+
+        Is equivalent to
+        [code-block
+`Hello, baz!
+Hello, qux!`]
+
+        So far I've experienced that [code con] is only useful for small things. If you really want to make heavy use of a reusable component then you might be better off writing a macro or using the [ref {=sec:macro-include} [code include] macro].
+      ]
+
+      [section {id=sec:macro-preamble} [\title Preamble]
+        Line semantics are preserved:
+        
+        [code-block
+`[list
+  One
+  [<def \item {flag}>
+    [\item Two]
+    [\item Three]
+  Four]`]
+
+        Will result in a list of which the middle two items have the property [code flag] set to [code true].
+
+        Beware:
+
+       [code-block
+`[list
+  One
+  [<def \item {flag}>
+    Two
+    Three]
+  Four]`]
+
+        Will still result in a list with four items, as expected, but the middle two items will NOT have the property [code flag] set to [code true].
+        
+        The the preamble macro is expanded first, resulting in two lines each containing a text node. The preamble regarding \item nodes had no effect because during evaluation of the preamble macro, there were no \item nodes.
+
+        The two lines resulting from the preamble macro are then consumed by the list node: only now are the lines transformed into \item nodes.
+        
+        Something to keep in mind: preamble works outside-in, whereas the evaluation of nodes works inside-out.
+
+        This is definitely something I want to fix. The intuition of macro is supposed to be that the macro is transparent, like the macro is not really there. Content inside a macro should behave exactly the same is it would outside a macro. 
+      ]
+
+      [section [\title Read]]
+
+      [section {id=sec:macro-include} [\title Include]]
+    ]
+
+    [section [\title Comments]
+      You can start a comment at any place where skippable whitespace is expected.
+
+      A line comment starts with [code `;`].
+
+      [code-block `Here ; is part of the text: it's not placed at a place where skippable whitespace is expected.`]
+
+      [code-block `; Here it's not part of the text but indeed a comment: it's placed where skippable whitespace is expected.`]
+    
+      You can also place a comment in an arbitrary range of your document (as opposed to only the remainder of a line) by placing it between a pair of [code `/*`] and [code `*/`].
+
+      [code-block `/* multi
+      line
+          comment */`]
+
+      [code-block `[link /* comment */ {=company.com} ClIcK Me!]`]
+
+      Arbitrary range comments [code `/* can /* be */ nested */`].
+
+      A common use of comments it not to actually provide a comment but to temporarily ignore part of your source. As a convenience, you can ignore an entire node by prefixing a [code _]. Important: the ignored node should still be syntactically correct!
+
+      [code-block
+`[section 
+  
+  Foo
+
+  _[section
+    
+    Bar
+    
+    [section
+    
+      Baz]]
+      
+  [section
+  
+    Qux]]`]
+
+      I plan on letting [code _] ignore more things than just nodes but haven't gotten around to it yet.
+
+      If you don't use _ to ignore a node you don't have to escape it:
+      [code-block If you don't use _ to ignore a node you don't have to escape it:]
+    ]
+  ]
+
+  [section [\title Nodes]
+
+    [section {id=sec:node-text} [\title Text]]
+
+    [section {id=sec:node-ref} [\title Cross reference]
+    
+      Can't have the numbered group's be injected automatically because heavily subject to grammar and choice. Sections 1 and 2, Section 1 and section 2...
+
+      First it was just the number. Then added link to the rendered reference. Then thought: hmm, would like to be able to click on more than just the number, e.g. also the word section. Number would be always on the right. Then though: hey wait a minute, something I don't event want to mention the number. Number there because in print, you can't click, so you need the number to look up where to go, but digitally you can just click. So number is now optional, but its order within the rest of the content matters. So number child type, reference is list-kinded.
+
+      However, currently must provide the [code `\number`] node as a direct child of the [code ref] node. So can't do something like `[ref Bold [b [\number]]]`, because [code `\number`] is direct child of [code b]. Currently in the process of coming up with a solution to this.
+    ]
+
+    [section {id=sec:node-list} [\title List]]
+
+
+
+    [section [\title Code]]
+
+    [section [\title Terminal]]
+
+  ]
+
+]
+
+[section [\title The tool]
+
+  On numbering, TOC etc.
+
+  assets
+]
+
+[section [\title Footguns]
+]
+
+[section [\title Wrapping up]]
+
+[section [\title Closing thoughts]
+
+  After writing a lot in Markdown, was getting annoyed. Latex no option because pages. Event that triggered me to start with this project was accepting a job as a part-time teacher to 15-19 year olds. I dreaded the prospect of receiving their ill formatted reports! I knew especially blocks of code were going to be a problem.
+
+  I wanted them to be able to hand in as little as possible, such that as little as possible could go wrong. Many things I could add programatically: the name of the project, the authors' names, the date. They wouldn't even have to do any styling. 
+  
+  They would receive a skeleton source project and a rendering tool for them to preview their work with. They would not deliver a built artifact but only their source project, now containing the content the had written, and only that. I would use the exact same rendering tool to build the actual artifacts I would grade.
+
+  I would even be able to programatically analyze their work and possibly reject it if it failed to meet certain criteria, such as the presence of certain specifically entitled sections.
+
+  I had four weeks or so to work on this project before classes started. When they did start I was far from finished. My students had to use existing tools, which they knew poorly, and indeed mostly delivered work that brought the wrong kind of tears to my eyes. Worst of all, and I knew this was going to happen, too many of them DIDN'T INCLUDE THE CORRECT TITLE, AAAAAAH!
+
+  More importantly, I wanted them to have great writing tools so they would enjoy writing and spend their energy on crafting something great, rather than spending it on dealing with frustratingly frictive tooling.
+
+  Also, I knew I would be getting a fellow teacher who is about two decades older than I am and would perhaps be inclined to want to print on paper the reports of the students we would share. I wanted to make sure our students could write a single source which I could render as a digital artifact for me, and as a printable version for my colleague.
+
+  Ironically I found time to continue this project because I quit the teaching job. Nevertheless, I have kept these goals in mind and are still totally within reach.
+]
+
+[appendix {id=this-page-in-gobbo} [\title This page in Gobbo] [code-block [read]]]

@@ -1,0 +1,70 @@
+.gobbo-lang-token-delimeter-preamble {
+  color: #afc4db;
+}
+
+.gobbo-lang-token-delimeter-class {
+  color: #ffbff2;
+}
+
+.gobbo-lang-token-delimeter-child {
+  color: #ffbff2;
+}
+
+.gobbo-lang-token-operator {
+  color: #ffbff2;
+}
+
+.gobbo-lang-token-keyword {
+  color: steelblue;
+}
+
+.gobbo-lang-token-name-node-type {
+  color: #f4bf75;
+}
+
+.gobbo-lang-token-name-binding {
+  color: #e6e;
+}
+
+.gobbo-lang-token-name-property {
+  color: #89bdff;
+}
+
+.gobbo-lang-token-delimeter-properties {
+  color: #afc4db;
+}
+
+.gobbo-lang-token-text-escaped {
+  color: #a4dbb3;
+}
+
+.gobbo-lang-token-text {
+  color: #f5f5f5;
+}
+
+.gobbo-lang-token-delimeter-node.depth-1 {
+  /* color: #ac4142; */
+  color: #cf6a4c;
+}
+
+.gobbo-lang-token-delimeter-node.depth-2 {
+  color: #52ae0b;
+}
+
+.gobbo-lang-token-delimeter-node.depth-3 {
+  color: #8a8986;
+}
+
+.gobbo-lang-token-comment {
+  color: green;
+}
+
+.gobbo-lang-token-ignore {
+  color: darkolivegreen;
+}
+
+.gobbo-lang-token-space {}
+
+.gobbo-lang-token-no-parse {
+  color: red;
+}

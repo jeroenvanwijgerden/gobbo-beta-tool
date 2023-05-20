@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="style/gobbo-code.css">
+  <link rel="stylesheet" href="style/gobbo-terminal.css">
+  <link rel="stylesheet" href="style/gobbo-lang.css">
+  <link rel="stylesheet" href="style/hljs-sunburst.css">
+  <style>
+    @font-face {
+      font-family: 'DejaVu Sans Mono';
+      src: url('./style/DejaVuSansMono.woff') format('woff'),
+    }
+
+    :root {
+      background-color: #222;
+      color: #f0f0f0;
+      font-family: Arial, Helvetica, sans-serif;
+
+    }
+
+    a {
+      all: unset;
+      cursor: pointer;
+    }
+
+    body {
+      margin: 0;
+      width: 100vw;
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 275px auto;
+    }
+
+    .toc {
+      padding: 8px;
+      background-color: #151515;
+      white-space: nowrap;
+      overflow: auto;
+    }
+
+    .toc> :not(:first-child) {
+      margin-top: 8px;
+    }
+
+    .toc .numbering {
+      margin-right: 1ch;
+      font-weight: bold;
+    }
+
+    #content-container {
+      overflow-y: auto;
+    }
+
+    #content {
+      max-width: 65ch;
+      margin: auto;
+      line-height: 1.75;
+    }
+
+    div.image {
+      width: max-content;
+      max-width: 100%;
+      margin: auto;
+    }
+
+    div.image img {
+      display: block;
+      margin: auto;
+    }
+
+    div.image .caption {
+      font-size: 0.8em;
+    }
+
+    div.image .caption .numbering {
+      font-weight: bold;
+      margin-right: 1.5em;
+    }
+
+    a.link {
+      color: #b0b0f0;
+    }
+
+    a.link:visited {
+      color: #9090f0;
+    }
+
+    a.cross-reference {
+      all: unset;
+      cursor: pointer;
+      color: pink;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      margin: 3rem -24px 1rem;
+      padding: 0 24px 0;
+      background-color: #223030;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+    }
+
+    h3 {
+      font-size: 1.2rem;
+    }
+
+    h4,
+    h5,
+    h6 {
+      font-size: 1rem;
+    }
+
+
+    h2 .numbering,
+    h3 .numbering,
+    h4 .numbering,
+    h5 .numbering,
+    h6 .numbering {
+      margin-right: 1.2em;
+    }
+
+    p,
+    ul,
+    ol,
+    table.code {
+      margin-bottom: 1.5rem;
+    }
+
+    table {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 0px;
+      border-collapse: collapse;
+      border-spacing: 0px;
+    }
+
+    td {
+      padding: 0px;
+    }
+
+    table.list td:first-child {
+      width: 3ch;
+      color: red;
+    }
+
+    code {
+      font-family: "DejaVu Sans Mono";
+    }
+
+    code.inline {
+      background-color: #181818;
+      padding: 0.2em;
+      font-size: 0.9em;
+    }
+
+    kbd.key {
+      font-family: "DejaVu Sans Mono";
+      padding: 0.2em;
+      font-size: 0.8em;
+      background-color: #ddd;
+      color: black;
+      border-radius: 0.3em;
+      height: fit-content;
+      margin-left: 0.2em;
+      margin-right: 0.2em;
+      width: 300px;
+    }
+  </style>
+</head>
+
+<body>
+  _GOBBO_TOC
+  <div id="content-container">
+    <div id="content">_GOBBO_CONTENT</div>
+  </div>
+</body>
+
+</html>

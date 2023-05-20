@@ -1,0 +1,149 @@
+table.code-block {
+  font-size: 0.9rem;
+  line-height: 1.25;
+  padding: 0px;
+  border-collapse: collapse;
+  /* border: 1px solid #1a1a1a; */
+  border-spacing: 0px;
+  font-family: "DejaVu Sans Mono";
+  table-layout: fixed;
+
+  /* -o-user-select: text;
+  -moz-user-select: text;
+  -webkit-user-select: text;
+  user-select: text; */
+}
+
+table.code-block tr {
+  border-width: 0px;
+  margin: 0px;
+  padding: 0px;
+}
+
+table.code-block td {
+  vertical-align: top;
+}
+
+table.code-block td.line-numbers {
+  word-break: keep-all;
+  /* border-right: 1px solid #fff; */
+  background-color: #1e1e1e;
+  color: #666;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  text-align: right;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.highlight-container {
+  position: relative;
+}
+
+.highlight-copy-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: rgba(0,0,0,0);
+
+}
+
+.highlight-container span:not(.highlight-copy-overlay) {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.no-select {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+table.code-block .empty {
+  content: "\n";
+}
+
+table.code-block td.code {
+  color: #d4d4d4;
+  background-color: #181818;
+  padding-left: 0.25em;
+}
+
+table.code-block.wrap td.code {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  line-break: anywhere;
+}
+
+table.code-block td.code pre {
+  overflow-x: auto;
+  padding: 0px;
+  margin: 0px;
+}
+
+span.highlight-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: rgba(0,0,0,0);
+  opacity: 0.2;
+}
+
+span.highlight-overlay-prose {
+  height: 100%;
+  width: 100%;
+}
+
+span.highlight-group-1 {
+  background-color: #ff0;
+}
+
+span.highlight-group-2 {
+  background-color: #f0f;
+}
+
+span.highlight-group-3 {
+  background-color: #0ff;
+}
+
+pre.indent {
+  display: inline-block;
+}
+
+table.code-block.print pre {
+  overflow-x: hidden;
+}
+
+table.code-block tr:first-child td {
+  padding-top: 0.25rem;
+}
+
+table.code-block tr:last-child td {
+  padding-bottom: 0.25rem;
+}
+
+div.code-block > .title {
+  font-family: "DejaVu Sans Mono";
+  font-size: 0.8em;
+  padding: 0.2em;
+  padding-left: 0.6em;
+  background-color: #2a2a2a;
+ 
+}
+
+div.code-block {
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
