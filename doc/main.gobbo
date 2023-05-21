@@ -262,6 +262,50 @@ Good-bye, world!`]
 
       Like regular text, escaped text is also an implicit text node.
     ]
+
+    [section [\title Comments]
+      You can start a comment at any place where skippable whitespace is expected.
+
+      A line comment starts with [code `;`].
+
+      [code-block `Here ; is part of the text: it's not placed at a place where skippable whitespace is expected.`]
+
+      [code-block `; Here it's not part of the text but indeed a comment: it's placed where skippable whitespace is expected.`]
+    
+      You can also place a comment in an arbitrary range of your document (as opposed to only the remainder of a line) by placing it between a pair of [code `/*`] and [code `*/`].
+
+      [code-block `/* multi
+      line
+          comment */`]
+
+      [code-block `[link /* comment */ {=company.com} ClIcK Me!]`]
+
+      Arbitrary range comments [code `/* can /* be */ nested */`].
+
+      A common use of comments it not to actually provide a comment but to temporarily ignore part of your source. As a convenience, you can ignore an entire node by prefixing a [code _]. Important: the ignored node should still be syntactically correct!
+
+      [code-block
+`[section 
+  
+  Foo
+
+  _[section
+    
+    Bar
+    
+    [section
+    
+      Baz]]
+      
+  [section
+  
+    Qux]]`]
+
+      I plan on letting [code _] ignore more things than just nodes but haven't gotten around to it yet.
+
+      If you don't use _ to ignore a node you don't have to escape it:
+      [code-block If you don't use _ to ignore a node you don't have to escape it:]
+    ]
     
     [section {id=sec:properties} [\title Properties]
     
@@ -661,7 +705,7 @@ An example of [code \`<def>\`]:
       ]
 
       [section {id=sec:preamble-scope} [\title Scope]
-        The 'area' of your document affected by preamble is limited: preamble has a scope. If you put it on top of a file (before any content, remember?) the preamble will be in effect for the entire file; if you put it inside a node, it will be in effect only within that node.
+        The portion of your document affected by preamble is limited: preamble has a scope. If you put it on top of a file (before any content, remember?) the preamble will be in effect for the entire file; if you put it inside a node, it will be in effect only within that node.
 
         [code-block
 `<def code-block {=gobbo wrap}>
@@ -689,26 +733,30 @@ An example of [code \`<def>\`]:
 
 [code-block {=gobbo wrap}]`]
 
-        However, unlike most programming languages, the scope is not lexical; rather, it is dynamic. This becomes more clear in [ref {=sec:macro-con} section [\number]].
+        Unlike most programming languages, scopes in Gobbo are not lexical; rather, they are dynamic. This becomes more clear in [ref {=sec:macro-con} section [\number]].
       ]
     ]
 
     [section [\title Macros]
     
-      Macros are a special kind of node. A macro transforms, or 'expands', into lines of nodes. [ref {=sec:macro-preamble} Section [\number]] shows a pitfall of this behavior.
+      Macros are a special kind of node. A macro transforms, or 'expands', into other nodes.
 
-      There is no way to create a macro within a Gobbo file. You can create macros like you create your own node types: in the host langauge. You'll see how to do that in phase 2 of the beta.
-
-      There a are five macros that are hard baked into Gobbo in the sense that they have special syntax. Otherwise the syntax for macros is identical to that of regular nodes.
-      
-      Some of these core macros also have functionality that is impossible to emulate with custom macros. I'll discuss these five macros here.
+      Gobbo's core has five macros, which will all be discussed in subsections. There is no way to create macros with Gobbo syntax: you're supposed to do that in the host langauge. In phase 2 you'll learn how.
 
       [section {id=sec:macro-val} [\title Value]
         [code-block `<val foo bar> [val foo]`]
 
-        Transforms into a text node with as content the property value bound to the given name. Equivalent to
+        The [code `[val foo]`] node transforms into a text node with as content the property value bound to the given name. The example above is equivalent to
 
         [code-block `bar`]
+
+        The intuition is that in the source you can replace a macro with the content it expands to. This means that [code `<def>`] is also applied:
+
+        [code-block `<val foo bar> <def text {baz}> [val foo]`]
+
+        is equivalent to
+
+        [code-block `[text {baz} bar]`]
       ]
 
       [section {id=sec:macro-con} [\title Content]
@@ -716,22 +764,146 @@ An example of [code \`<def>\`]:
 
         Transforms into the content bound to [code foo], in this case the text node `bar`.
 
-        You can also provide some preamble to the [code con] macro, which will be applied to the bound content.
+        You can also provide some [highlight preamble] to the [code con] macro, which will be applied to the bound content.
 
-        [code-block `<con foo [Hello, [con bar]!]>
-[con foo <con bar [baz]>]
-[con foo <con bar [qux]>]`]
+        [code-block {highlight=2:12-2:25,3:12-3:26} `<con hello [Hello, [con x]!]>
+[con hello <con x [World]>]
+[con hello <con x [Sailor]>]`]
 
         Is equivalent to
         [code-block
-`Hello, baz!
-Hello, qux!`]
+`Hello, World!
+Hello, Sailor!`]
 
-        So far I've experienced that [code con] is only useful for small things. If you really want to make heavy use of a reusable component then you might be better off writing a macro or using the [ref {=sec:macro-include} [code include] macro].
+        The example above shows that preamble scope is not lexical but dynamic. This example makes that more clear:
+
+        [code-block {highlight=3\4:12-4:27}
+`<con x [World]>
+<con hello [Hello, [con x]!]>
+[con hello]
+[con hello <con x [Sailor]>]`]
+
+        is equivalent to
+        [code-block
+`Hello, World!
+Hello, Sailor!`]
+
+        Line 1 binds some content to [code x] in the current [i context].
+        
+        Line 2 binds some content to [code hello]. On line 3, the evaluation of the document 'jumps' to the content bound to [code hello], taking the current context with it. In this context, the content bound to [code x] is [code World].
+        
+        [highlight {=3} On line 4, before the jump happens], the context is augmented: the content bound to [code x] is overridden by other content. Now this new context, with a different binding to [code x], is brought along for the jump to the content bound to [code hello]. Now the content bound to [code x] is [code Sailor].
+
+
+        So far I've experienced that [code con] works best for small things. If you really want to combine nodes in a reusable way then you might be better off writing a macro or using [ref {=sec:macro-include} the [code include] macro].
+
+
       ]
 
       [section {id=sec:macro-preamble} [\title Preamble]
-        Line semantics are preserved:
+        Preamble comes before content, but sometimes you want to apply preamble only to part of your content somewhere in the middle. For example, you mostly write about Gobbo code, but somewhere halfway you have a couple of Clojure code blocks. You could use classes, or instead of writing this:
+
+        [code-block
+`<def code-block {=gobbo}>
+[code-block]
+[code-block {=clojure}]
+[code-block {=clojure}]
+[code-block]`]
+
+        You could write this:
+
+        [code-block
+`<def code-block {=gobbo}>
+[code-block]
+[<def code-block {=clojure}>
+  [code-block]
+  [code-block]]
+[code-block]`]
+
+        A node without node type, classes or properties but with preamble before its content is a [i preamble macro]. It expands into its content, but with the preamble applied.
+
+        If the content of a preamble macro is pretty small, like it is in the previous example, then it becomes less dangerous to use the wildcard versions of [code `<cla>`] and [code `<def>`] because you can tell at a glance all nodes that are affected:
+
+        [code-block
+`<def code-block {=gobbo}>
+[code-block]
+[<def /* no types: wild! */ {=clojure}>
+  [code-block]
+  [code-block]]
+[code-block]`]
+
+       
+      ]
+
+      [section {id=sec:macro-include} [\title Include]
+
+        Let's say your document's project directory contains these files (and the [directory examples] directory):
+
+        [code-block.no {!line-numbers} [\title doc]
+`main.gobbo
+secondary.gobbo
+examples
+  1.gobbo
+  2.gobbo`]
+
+        [code-block [\title main.gobbo]`[include {=secondary.gobbo}]!
+[include {=examples/1.gobbo}]`]
+
+        [code-block [\title secondary.gobbo]`Greetings from secondary`]
+
+        [code-block [\title examples/1.gobbo]`'[include {=2.gobbo}]' and '[include {=../secondary.gobbo}]'`]
+
+        [code-block [\title examples/2.gobbo]`[include {=/secondary.gobbo}]`]
+
+        Then [code main.gobbo] would be equivalent to
+
+        [code-block
+`Greeting from secondary!
+'Greetings from secondary' and 'Greetings from secondary'`]
+
+        The [code include] macro is similar to the [code `con`] macro in that it expands into content defined elsewhere. In case of [code include], this content is defined in a different file.
+
+        Contrary to the [code val], [code con] and preamble macros, [code include] does take classes and properties. Currently the only used (and main) property is [code path].
+
+        You can specify either a relative or absolute path. Relative paths are relative to the 'current' file, the file where the [code include] macro resides. Absolute paths start at the project root ([directory doc]).
+
+        Like the [code con] macro, [code include] allows you to specify preamble that will be applied to the expanded content. Given the file
+
+        [code-block [\title hello.gobbo] `Hello, [con x]!`]
+
+        then
+
+        [code-block [\title main.gobbo]
+`[include {=hello.gobbo} <con x [World]>]
+[include {=hello.gobbo} <con x [Sailor]>]`]
+
+        would be equivalent to
+
+        [code-block
+`Hello, World!
+Hello, Sailor!`]
+
+        Not that even without specifying preamble inside the [code include] macro, the context in which [code include] is evaluated is still passed to [directory hello.gobbo]:
+
+        [code-block [\title main.gobbo]
+`<con x [World]>
+[include {=hello.gobbo}]`]
+
+        would be equivalent to
+
+        [code-block `Hello, World!`]
+      ]
+
+      [section [\title Read]
+        Like [code include], the [code read] macro has [code path] as its main property. The difference is that [code read] doesn't evaluate the file's content as Gobbo code, but rather expands into a single text node with as content the file's cotent. Mostly used inside code blocks:
+
+        [code-block `[code-block [read {=main.gobbo}]]`]
+
+        If you do not specify a value for [code path], then the current file is read (see the last line of the code block in [ref {=this-page-in-gobbo} Appendix [\number]]).
+      ]
+
+      [section [\title Lines]
+         Line semantics are preserved:
         
         [code-block
 `[list
@@ -764,53 +936,7 @@ Hello, qux!`]
         This is definitely something I want to fix. The intuition of macro is supposed to be that the macro is transparent, like the macro is not really there. Content inside a macro should behave exactly the same is it would outside a macro. 
       ]
 
-      [section [\title Read]]
-
-      [section {id=sec:macro-include} [\title Include]]
-    ]
-
-    [section [\title Comments]
-      You can start a comment at any place where skippable whitespace is expected.
-
-      A line comment starts with [code `;`].
-
-      [code-block `Here ; is part of the text: it's not placed at a place where skippable whitespace is expected.`]
-
-      [code-block `; Here it's not part of the text but indeed a comment: it's placed where skippable whitespace is expected.`]
-    
-      You can also place a comment in an arbitrary range of your document (as opposed to only the remainder of a line) by placing it between a pair of [code `/*`] and [code `*/`].
-
-      [code-block `/* multi
-      line
-          comment */`]
-
-      [code-block `[link /* comment */ {=company.com} ClIcK Me!]`]
-
-      Arbitrary range comments [code `/* can /* be */ nested */`].
-
-      A common use of comments it not to actually provide a comment but to temporarily ignore part of your source. As a convenience, you can ignore an entire node by prefixing a [code _]. Important: the ignored node should still be syntactically correct!
-
-      [code-block
-`[section 
-  
-  Foo
-
-  _[section
-    
-    Bar
-    
-    [section
-    
-      Baz]]
-      
-  [section
-  
-    Qux]]`]
-
-      I plan on letting [code _] ignore more things than just nodes but haven't gotten around to it yet.
-
-      If you don't use _ to ignore a node you don't have to escape it:
-      [code-block If you don't use _ to ignore a node you don't have to escape it:]
+      [section [\title Fallback]]
     ]
   ]
 
