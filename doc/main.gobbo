@@ -996,4 +996,4 @@ Hello, Sailor!`]
   Ironically I found time to continue this project because I quit the teaching job. Nevertheless, I have kept these goals in mind and are still totally within reach.
 ]
 
-[appendix {id=this-page-in-gobbo} [\title This page in Gobbo] _[code-block [read]]]
+[appendix {id=this-page-in-gobbo} [\title This page in Gobbo] [code-block [read]]]
