@@ -1,4 +1,3 @@
-import { isAbsolute } from "https://deno.land/std@0.185.0/path/win32.ts";
 import { path as p } from "../deps.ts";
 import { ERROR_TYPE, EXCEPTION_NAME } from "./common.ts";
 
