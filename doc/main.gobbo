@@ -303,13 +303,13 @@ Good-bye, world!`]
 
       To avoid confusion, if you use both the shorthand and set the main property explicitly, you'll get an informative error when building your document.
 
-      [code-block `[link {=foo url=bar} /* error! */ ]`]
+      [code-block `[link {=foo url=bar} /* error: "main property 'url' already set" */ ]`]
 
       The shorthand to set the main property must be the first setting. Placing the shorthand non-first is syntactically erroneous:
 
       [code-block `[code-block {line-numbers=true =gobbo}]`]
 
-      As a convenience, there is a shorthand to set 'flag' properties (that take [code true] or [code false] as a value). These two lines are equivalent:
+      As a convenience, there is a shorthand to set properties to [code true] or [code false]. These two lines are equivalent:
 
       [code-block
 `[code-block {line-numbers=true wrap=false}]
@@ -483,9 +483,9 @@ Good-bye, world!`]
     
       Your document's actual content is provided by nodes and their properties. However, while writing you can make use of some conveniences - mostly to greatly reduce repetitive labor - to specify these nodes and their properties. You do this with preamble.
 
-      As a general rule, you can put preamble [i before] any content: the preamble will then be applied to that content.
+      As a general rule, you put preamble [i before] any content: the preamble will then be applied to that content. In [ref {=sec:macro-preamble} section [\number]] you'll learn how to put preamble in the middle of content as well (not really, but intuitively).
 
-      This section's subsections show all four types of preamble and provide more detail on how preamble works.
+      The following subsections show all four types of preamble and provide more detail on how preamble works.
 
       [section {id=sec:preamble-val} [\title Value]
         With [code `<val name value>`] you can bind a property value to a name. You can then place [code.no `<val name>`] anywhere a property value is expected. Lines 2 and 3 are equivalent:
@@ -525,6 +525,13 @@ bar`]
 `<con foo [<val bar baz> [code {=<val bar>}]]>
 [con foo]
 [code {=baz}]`]
+
+        The namespaces for [code `<val>`] and [code `<con>`] are separated: you can bind a property value and content to the same name without issue.
+
+        [code-block
+`<val foo bar>
+<con foo [baz]>
+[code.foo {=<val foo>}]`]
       ]
 
       [section {id=sec:preamble-cla} [\title Class]
@@ -534,7 +541,7 @@ bar`]
 
         [code-block
 `<cla .gob code-block {=gobbo wrap}>
-<cla .clj code-block {=gobbo !wrap}>
+<cla .clj code-block {=clojure !wrap}>
 
 [code-block.gob some code...]
 [code-block.clj some code...]
@@ -599,7 +606,7 @@ bar`]
 [text.bar]
 [text {a=1 b=3 c=4}]`]
 
-        You can [i omit] any node types. This is a wild card, creating the class for all node types for which the class would be valid (not cause an error). Because of the lack of error messaging upon creation of the class, you might be confused as to why a class wasn't created for a node type. So omit node types  at your own risk (you lazy demon).
+        You can omit any node types. This is a wild card, creating the class for all node types for which the class would be valid (not cause an error). Because of the lack of error messaging upon creation of the class, you might be confused as to why a class wasn't created for a node type. So omit node types  at your own risk (you lazy demon).
 
         In the example below, the class [code `.foo`] is created for type [code code] but not for type [code text] because [code text] doesn't have a main property.
 
@@ -607,16 +614,82 @@ bar`]
 `<cla .foo {=bar}>
 [code.foo]
 ; all good
+
 [text.foo]
 ; error: "no class 'foo' for type 'text'"`]
+
+        Each node type has its own namespace for classes: you can give multiple types distinct classes with the same name. Lines 3 and 4 are equivalent:
+
+        [code-block
+`<cla .foo paragraph {bar}>
+<cla .foo text {baz}>
+[paragraph.foo [text.foo]]
+[paragraph {bar} [text {baz}]]`]
+
+        You could expand a class by simultaneously overriding it and using it, like below. Lines 3 and 4 are equivalent.
+        [code-block
+`<cla .foo {bar}>
+<cla .foo .foo {baz}>
+[code.foo]
+[code {bar baz}]`]
+
+        Ever wanting to do this will make more sense after you've read about [ref {=sec:preamble-scope}the scoping of preamble].
       ]
 
       [section {id=sec:preamble-def} [\title Default]
-      
+        [code `<def>`] is similar to [code `<cla>`], but where a class lets you apply a bunch of properties to a node later, [code `<def>`] will cause a bunch of properties to be applied by default.
+
+        [code-block
+`<def code code-block {=gobbo}>
+An example of [code \`<def>\`]:
+[code-block \`<def code code-block {=gobbo}>\`]`]
+
+        is equivalent to
+
+        [code-block
+`An example of [code {=gobbo} \`<def>\`]:
+[code-block {=gobbo} \`<def code code-block {=gobbo}>\`]`]
+
+        Syntactically the only difference between [code `<cla>`] and [code `<def>`] is the keyword ([code cla] or [code def]) and for [code `<cla>`] you provide a class name after the keyword.
+
+        Other than the differences mentioned in this section, all specifics of [code `<cla>`] also hold for [code `<def>`].
+
+        Note the difference in the below example. The semantics of line 1 are [i create the 'foo' class for all node types; applying the class will give a node these properties]. The semantics of line 2 are [i by default, apply the 'foo' class and these properties to all nodes for which it's possible to do so (in this case: which have a 'foo' class)].
+
+        [code-block `<cla .foo {bar}>
+<def .foo {bar}>`]
       ]
 
-      [section [\title Scope]
-      
+      [section {id=sec:preamble-scope} [\title Scope]
+        The 'area' of your document affected by preamble is limited: preamble has a scope. If you put it on top of a file (before any content, remember?) the preamble will be in effect for the entire file; if you put it inside a node, it will be in effect only within that node.
+
+        [code-block
+`<def code-block {=gobbo wrap}>
+[code-block]
+
+[section
+  [section
+    <def code-block {=clojure !wrap}>
+    [code-block]]
+    
+  [code-block]]
+
+[code-block]`]
+
+         The example above is equivalent to
+
+         [code-block
+`[code-block {=gobbo wrap}]
+
+[section
+  [section
+    [code-block {=clojure !wrap}]]
+    
+  [code-block {=gobbo wrap}]]
+
+[code-block {=gobbo wrap}]`]
+
+        However, unlike most programming languages, the scope is not lexical; rather, it is dynamic. This becomes more clear in [ref {=sec:macro-con} section [\number]].
       ]
     ]
 
@@ -797,4 +870,4 @@ Hello, qux!`]
   Ironically I found time to continue this project because I quit the teaching job. Nevertheless, I have kept these goals in mind and are still totally within reach.
 ]
 
-[appendix {id=this-page-in-gobbo} [\title This page in Gobbo] [code-block [read]]]
+[appendix {id=this-page-in-gobbo} [\title This page in Gobbo] _[code-block [read]]]
