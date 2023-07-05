@@ -142,10 +142,8 @@
 
       [b Empty lines and indentation do not have any semantic meaning whatsoever.] This frees you to use them to format the document to your preference. The result below is equivalent to the result above:
 
-      [code-block
-`Hello, world!
-
-Good-bye, world!`]
+      [code-block `Hello, world!
+                   Good-bye, world!`]
     ]
 
     [section [\title Nodes]
@@ -158,8 +156,8 @@ Good-bye, world!`]
       After the opening bracket and the node's type name you can put any amount of whitespace (spaces, tabs or newlines).
 
       [code-block `This is [   b
-      
-            bold].`]
+                   
+                   bold].`]
 
       [b Whitespace at the end of a line has semantic meaning.]
 
@@ -170,12 +168,12 @@ Good-bye, world!`]
       However, 
 
       [code-block `This is [b bold
-      ].`]
+                                    ].`]
 
       is the same. Select the text in the code block: the line ends where the text ends. The whitespace between the the text and the closing bracket now happens at the start of a line, which makes it indentation and is thus skipped.
 
       [code-block `This is [b bold   
-      ].`]
+                                    ].`]
 
       If you select the text is the above code block you see that now there is whitespace on the line after the text, which causes it to become part of the text. The whitespace on the next line, before the closing bracket, is still considered indentation and skipped.
     ]    
@@ -204,41 +202,35 @@ Good-bye, world!`]
 
       You don't always want a node (including a text node) to be part of a paragraph. For each node type it must be specified if nodes of that type belong in a paragraph or not. [code text] and [b] nodes belong in a paragraph. A [code section] node, for example, does not belong in a paragraph.
 
-      [code-block
-`Hello
-[b Bye]
-[section]`]
+      [code-block `Hello
+                   [b Bye]
+                   [section]`]
 
       is equivalent to
 
-      [code-block
-`[paragraph Hello]
-[paragraph [b Bye]]
-[section]`]
+      [code-block `[paragraph Hello]
+                   [paragraph [b Bye]]
+                   [section]`]
 
       The [code text] and [code b] nodes are placed in a paragraph, the [code section] node is not. [code paragraph] nodes themselves are also not placed in a paragraph.
 
       If you place a node that doesn't belong in a paragraph on the same line as nodes that do, then the node that doesn't belong in a paragraph still not placed in a paragraph:
 
-      [code-block
-`Hello [section] Bye`]
+      [code-block `Hello [section] Bye`]
 
       is equivalent to
 
-      [code-block
-`[paragraph Hello ][section][paragraph \` Bye\`]`]
+      [code-block `[paragraph Hello ][section][paragraph \` Bye\`]`]
 
       The nodes that appear top-level (not nested within other nodes) are implicitly placed into paragraphs. For nodes nested within other nodes, it depends. For each node type it is specified whether or the content for nodes of the type is placed into paragraphs. E.g. for type [code section] content is placed into paragraphs, for [code code-block] it's not:
 
-      [code-block
-`[section foo]
-[code-block bar]`]
+      [code-block `[section foo]
+                   [code-block bar]`]
 
       is equivalent to
 
-      [code-block
-`[section [paragraph foo]]
-[code-block bar]`]
+      [code-block `[section [paragraph foo]]
+                   [code-block bar]`]
 
       As a document writer you probably don't have to worry about the 'in paragraph' and 'contains paragraphs' settings of node types. It's more a convenience for for node type creators.
     ]
@@ -261,6 +253,22 @@ Good-bye, world!`]
       [b If you want to escape text, write escaped text: text delimited by `\``.] [b In escaped text you can use the \ character to escape exactly two characters: \ and `\``.] Traditionally you would also escape things like newline characters and tabs. In Gobbo you just actually write the character (e.g. by creating a new line or insterting a tab).
 
       Like regular text, escaped text is also an implicit text node.
+
+      [section [\title Multi-line]
+        If you want to write multi-line escaped text, you must provide whitespace padding for the 'rest' lines (all but the first lines). This padding must reach the column up to and including the column of the opening `\`` of the escaped text.
+
+        [code-block `[code-block \`multiple
+                                  lines\``]
+
+        The padding exists solely for readability of the Gobbo source and will not be part of the implicit text node's content.
+
+        The below example would result in a syntax error:
+
+        [code-block `[code-block \`multiple
+                     lines\`]
+                     ; Error: expected escaped text line padding; instead got 'l'`]
+      ]
+      
     ]
 
     [section [\title Comments]
@@ -275,8 +283,8 @@ Good-bye, world!`]
       You can also place a comment in an arbitrary range of your document (as opposed to only the remainder of a line) by placing it between a pair of [code `/*`] and [code `*/`].
 
       [code-block `/* multi
-      line
-          comment */`]
+                       line
+                          comment */`]
 
       [code-block `[link /* comment */ {=company.com} ClIcK Me!]`]
 
@@ -284,22 +292,21 @@ Good-bye, world!`]
 
       A common use of comments it not to actually provide a comment but to temporarily ignore part of your source. As a convenience, you can ignore an entire node by prefixing a [code _]. Important: the ignored node should still be syntactically correct!
 
-      [code-block
-`[section 
-  
-  Foo
-
-  _[section
-    
-    Bar
-    
-    [section
-    
-      Baz]]
-      
-  [section
-  
-    Qux]]`]
+      [code-block `[section 
+                    
+                    Foo
+                   
+                    _[section
+                      
+                      Bar
+                      
+                      [section
+                      
+                        Baz]]
+                        
+                    [section
+                    
+                      Qux]]`]
 
       I plan on letting [code _] ignore more things than just nodes but haven't gotten around to it yet.
 
@@ -323,10 +330,9 @@ Good-bye, world!`]
 
       Below I bind the property value [code gobbo] to the name [code lang] and then use it to specify the [code language] property of two nodes.
 
-      [code-block
-`<val lang gobbo>
-[code-block {language=<val lang>}]
-[code-block {language=<val lang>}]`]
+      [code-block `<val lang gobbo>
+                   [code-block {language=<val lang>}]
+                   [code-block {language=<val lang>}]`]
 
       Multiple property settings are separated by whitespace:
 
@@ -335,15 +341,14 @@ Good-bye, world!`]
       There can be whitespace between a name and a value:
 
       [code-block `[code-block {   language  =    gobbo  line-numbers
-  = 
-      true
-  }`]
+                   = 
+                       true
+                   }`]
 
       As a convenience, each node type can have exactly one [i main property]. This allows you to specify a value without having to mention the property's name. For type [code link] the main property is [code url], so these two lines are equivalent:
 
-      [code-block
-`[link {url=en.wikipedia.org} Wikipedia]
-[link {=en.wikipedia.org} Wikipedia]`]
+      [code-block `[link {url=en.wikipedia.org} Wikipedia]
+                   [link {=en.wikipedia.org} Wikipedia]`]
 
       To avoid confusion, if you use both the shorthand and set the main property explicitly, you'll get an informative error when building your document.
 
@@ -355,9 +360,8 @@ Good-bye, world!`]
 
       As a convenience, there is a shorthand to set properties to [code true] or [code false]. These two lines are equivalent:
 
-      [code-block
-`[code-block {line-numbers=true wrap=false}]
-[code-block {line-numbers !wrap}]`]
+      [code-block `[code-block {line-numbers=true wrap=false}]
+                   [code-block {line-numbers !wrap}]`]
       
       In sections [ref {=sec:preamble-cla} [\number]] and [ref {=sec:preamble-def} [\number]] you'll learn more utilities for setting properties.
     ]
@@ -365,26 +369,23 @@ Good-bye, world!`]
     [section [\title Global and child types]
       You've seen [code `[b bold]`], where [code b] is the node's type. [code b] is a [i global] node type, meaning it can be used anywhere: top-level and inside any arbitrary deeply nested node.
 
-      [code-block
-`Some top-level [b bold] text.
-
-[section
-  [section
-    Some nested [b bold] text]]`]
+      [code-block `Some top-level [b bold] text.
+                   
+                   [section
+                     [section
+                       Some nested [b bold] text]]`]
 
       Indeed, [code section] is also a global node type.
 
-      [code-block
-`[section [\title Foo]
-  [code-block [\title Bar]
-    \`some code\`]]`]
+      [code-block `[section [\title Foo]
+                   [code-block [\title Bar]
+                   \`some code\`]]`]
       
       Both [code section] and [code code-block] have a child type [code title]. These types are distinct. In any error messaging they would be referred to as [code section\title] and [code code-block\title]. In fact, the above example is a shorthand. Equivalent would be:
 
-      [code-block
-`[section [section\title Foo]
-  [code-block [code-block\title Bar]
-    \`some code\`]]`]
+      [code-block `[section [section\title Foo]
+                   [code-block [code-block\title Bar]
+                    \`some code\`]]`]
 
       The main reason I introduced the notion of child types was to introduce a semblence of namespaces. As you'll learn during phase 2 of the beta, node type authors now only have to worry about name clashing within their own node type. Tool authors only have to worry about name clashes in the global namespace.
 
@@ -404,13 +405,13 @@ Good-bye, world!`]
       When a node has distincts parts to it, it is probably map-kinded. Take a section, for example. 
 
       [code-block `[section [\title Foo]
-  Bar]`]
+                    Bar]`]
 
       A section has two distinct parts: a title and a body. These distinct parts are specified as child-typed nodes. But hold on: there's a [code `\title`] node, but where's the [code `\body`] node?
 
       Actually,
       [code-block `[section [\title Foo]
-  Bar]`]
+                    Bar]`]
   
       is shorthand for
       [code-block `[section [\title Foo][\body Bar]]`]
@@ -437,67 +438,59 @@ Good-bye, world!`]
       Let's take another look at
 
       [code-block `[section [\title Foo]
-  Bar]`]
+                    Bar]`]
 
       When the content of the [code section] node is processed, first a [code `\title`] node is encountered. According to the [code section] type, [code `\title`] nodes should be mapped! So it is taken out and placed in the [code `\title`] bin. Next up is the [code `[text \` Bar\`]`] node. Its type, [code text], is not specified as being mapped, so it becomes part of the implicit [code `\body`] node. All content is now processed: an implicit [code `\body`] node is made with as content a list of the non-mapped nodes of the [code section] parent node, which happens to be that single [code text] node. This implicit [code `\body`] node is placed in the [code `\body`] bin, and the mapping is done.
 
       You could even place mapped nodes after the implicit node's content and get the same result:
 
-      [code-block
-`[section
-  Bar
-  [\title Foo]]`]
+      [code-block `[section
+                    Bar
+                    [\title Foo]]`]
 
       You could even have mapped nodes anywhere in between the non-mapped nodes:
 
-      [code-block
-`[section
-  Foo
-  [\title Bar]
-  Baz]`]
+      [code-block `[section
+                    Foo
+                    [\title Bar]
+                    Baz]`]
 
       is equivalent to
 
-      [code-block
-`[section
-  [\title Bar]
-  [\body Foo
-         Baz]]`]
+      [code-block `[section
+                    [\title Bar]
+                    [\body Foo
+                           Baz]]`]
 
       A restriction for this convenience is that the main mapped child type [i must] be list-kinded. Indeed, [code section\body] is list-kinded; as it happens, so is [code list\title]. But this restriction is only important when creating your own node types (be patient for phase 2!).
 
       Another map-kinded type is [code list]. The type [code list] has a single child type, [code `\item`], which is mapped and also specified as the main mapped child type.
 
-      [code-block
-`[list [\item Foo]
-      [\item Bar]
-      [\item Baz]]`]
+      [code-block `[list [\item Foo]
+                         [\item Bar]
+                         [\item Baz]]`]
 
       In the above example all nodes in the [code list] node's content are of a mapped type: they are all placed in the [code `\list`] bin. Earlier I wrote that for map-kinded nodes, the order of the content is decided by the creator of the type, not the author of the document. Time for some nuance. The creator of the type only decides the order of the mapped child types: first come all the titles, then come all the bodies. The author of the document still decides the order of the content within a mapped type. The a mapped child type's 'bin' in which nodes may or may not be placed is, itself, a list. The mapped nodes are placed in this list in the same order as they are written in the document.
 
       However, they way non-mapped content in a [code list] node is used to create implicit nodes is different from the way non-mapped content is used to create an implicit node as we've seen for the [code section] type.
 
       Whereas
-      [code-block
-`[section Foo
-         Bar
-         Baz]`]
+      [code-block `[section Foo
+                    Bar
+                    Baz]`]
       is equivalent to
-      [code-block
-`[section [\body Foo
-                Bar
-                Baz`]
+      [code-block `[section [\body Foo
+                                   Bar
+                                   Baz`]
 
       an equivalent of
-      [code-block
-`[list Foo
-      Bar
-      Baz]`]
+      [code-block `[list Foo
+                         Bar
+                         Baz]`]
       would be
-      [code-block
-`[list [\item Foo]
-      [\item Bar]
-      [\item Baz]]`]
+      [code-block `[list [\item Foo]
+                         [\item Bar]
+                         [\item Baz]]`]
 
       When a map-kinded type specifies a main mapped child type, it must specify whether [i all] non-mapped content is used to create [i a single implicit node], or whether [i each line] of the non-mapped content is used to create an implicit node, resulting in [i an implicit node per line].
  
@@ -505,11 +498,10 @@ Good-bye, world!`]
 
       Like with explicit paragraph and text nodes, you might want to have explicit main mapped child type nodes to give them properties. For example, with list items you might want to do something like this:
 
-      [code-block
-`[list [\item {id=step:eat} Eat
-      Sleep
-      Code
-      Go back to [ref {=step:eat} step [\number]]]]`]
+      [code-block `[list [\item {id=step:eat} Eat
+                         Sleep
+                         Code
+                         Go back to [ref {=step:eat} step [\number]]]]`]
 
       [list [\item {id=step:eat} Eat]
             Sleep
@@ -534,19 +526,17 @@ Good-bye, world!`]
       [section {id=sec:preamble-val} [\title Value]
         With [code `<val name value>`] you can bind a property value to a name. You can then place [code.no `<val name>`] anywhere a property value is expected. Lines 2 and 3 are equivalent:
 
-        [code-block
-`<val wikipedia https://en.wikipedia.org>
-[link {=<val wikipedia>} Wikipedia]
-[link {=https://en.wikipedia.org} Wikipedia]`]
+        [code-block `<val wikipedia https://en.wikipedia.org>
+                     [link {=<val wikipedia>} Wikipedia]
+                     [link {=https://en.wikipedia.org} Wikipedia]`]
 
         You can use this like a variable in programming, to have ensure multiple nodes have the same property value; if you want to change the property value, you only have to change it in one place.
 
         Important: all preamble must come before all content! The example below would give an error.
 
-        [code-block
-`Hello, world!
-<val wikipedia https://en.wikipedia.org>
-[link {=<val wikipedia>} Wikipedia]`]
+        [code-block `Hello, world!
+                     <val wikipedia https://en.wikipedia.org>
+                     [link {=<val wikipedia>} Wikipedia]`]
 
         As you can tell from the syntax coloring, the 'preamble' is actually parsed as plain text. So [code.no `<val wikipedia>`] tries to use the property value bound to the name [code wikipedia], but there is no property value bound to the name [code wikipedia].
 
@@ -556,26 +546,23 @@ Good-bye, world!`]
       [section [\title Content]
         With [code `<con name [content]>`] you can bind content to a name, to later place that bound content somewhere by using a special node: see [ref {=sec:macro-con} section [\number]]. To give you some idea already, lines 2 and 3 are equivalent:
 
-        [code-block
-`<con foo [bar]>
-[con foo]
-bar`]
+        [code-block `<con foo [bar]>
+                     [con foo]
+                     bar`]
 
         You place the bound content between node delimeters, but this is the single exceptional case where node delimeters don't actually specify a node. In the above example, [code bar] is not a node type, but just a plaim text.
 
         You place [i content] between the node delimeters: this means you can also put preamble there! Below is a nonsensical example just to show it's possible. After you've seen the other types of preamble you'll see some sensical examples. Lines 2 and 3 are equivalent:
 
-        [code-block
-`<con foo [<val bar baz> [code {=<val bar>}]]>
-[con foo]
-[code {=baz}]`]
+        [code-block `<con foo [<val bar baz> [code {=<val bar>}]]>
+                     [con foo]
+                     [code {=baz}]`]
 
         The namespaces for [code `<val>`] and [code `<con>`] are separated: you can bind a property value and content to the same name without issue.
 
-        [code-block
-`<val foo bar>
-<con foo [baz]>
-[code.foo {=<val foo>}]`]
+        [code-block `<val foo bar>
+                     <con foo [baz]>
+                     [code.foo {=<val foo>}]`]
       ]
 
       [section {id=sec:preamble-cla} [\title Class]
@@ -583,34 +570,30 @@ bar`]
 
         Let's say you're writing a document discussing both Gobbo code and Clojure code. For Gobbo code blocks you want Gobbo syntax highlighting and wrapping; for Clojure code blocks you want Clojure syntax highlighting and no wrapping. You can do something like this:
 
-        [code-block
-`<cla .gob code-block {=gobbo wrap}>
-<cla .clj code-block {=clojure !wrap}>
-
-[code-block.gob some code...]
-[code-block.clj some code...]
-[code-block.gob some code...]
-[code-block.clj some code...]`]
+        [code-block `<cla .gob code-block {=gobbo wrap}>
+                     <cla .clj code-block {=clojure !wrap}>
+                     
+                     [code-block.gob some code...]
+                     [code-block.clj some code...]
+                     [code-block.gob some code...]
+                     [code-block.clj some code...]`]
 
         Without the [code `<cla>`] preamble, you'd have to do something like:
 
-        [code-block
-`[code-block {=gobbo wrap} some code...]
-[code-block {=clojure !wrap} some code...]
-[code-block {=gobbo wrap} some code...]
-[code-block {=clojure !wrap} some code...]`]
+        [code-block `[code-block {=gobbo wrap} some code...]
+                     [code-block {=clojure !wrap} some code...]
+                     [code-block {=gobbo wrap} some code...]
+                     [code-block {=clojure !wrap} some code...]`]
 
         If you try to apply a class to a node but there is no such class for the node's type, you get an error:
 
-        [code-block
-`<cla .gob code-block {=gobbo wrap}>
-[section.gob] ; error`]
+        [code-block `<cla .gob code-block {=gobbo wrap}>
+                     [section.gob] ; error`]
 
         The [code `<cla>`] preamble can give errors itself. Properties specified in the [code `<cla>`] have to be valid for the provided type. Currently the only two ways for properties to be invalid is if you use the main property shorthand for a type that doesn't have a main property, or if you use the main property shorthand and later set the main property explicitly as well.
 
-        [code-block
-`<cla .foo paragraph {flag}> ; this is fine
-<cla .foo paragraph {=bar}> ; error: "node type 'paragraph' does not have a main property"`]
+        [code-block `<cla .foo paragraph {flag}> ; this is fine
+                     <cla .foo paragraph {=bar}> ; error: "node type 'paragraph' does not have a main property"`]
 
         [code-block `<cla .gob code {=gobbo language=gobbo}> ; error: "main property 'language' of type 'code' already set"`]
 
@@ -628,54 +611,48 @@ bar`]
 
         You can apply any amount of classes to a node (given that the classes exist for the node's type). The classes are applied left-to-right. Lines 3 and 4 are equivalent:
 
-        [code-block
-`<cla .1 text {a=1 b=2}>
-<cla .2 text {    b=3 c=4}>
-[text.1.2]
-[text {a=1 b=3 c=4}]`]
+        [code-block `<cla .1 text {a=1 b=2}>
+                     <cla .2 text {    b=3 c=4}>
+                     [text.1.2]
+                     [text {a=1 b=3 c=4}]`]
 
         You can provide both classes and properties to a node. First the classes are applied left-to-right, then the properties. Lines 3 and 4 are equivalent:
 
-        [code-block
-`<cla .1 text {a=1 b=2}>
-<cla .2 text {    b=3 c=4}>
-[text.1.2 {c=5 d=6}]
-[text {a=1 b=3 c=5 d=6}]`]
+        [code-block `<cla .1 text {a=1 b=2}>
+                     <cla .2 text {    b=3 c=4}>
+                     [text.1.2 {c=5 d=6}]
+                     [text {a=1 b=3 c=5 d=6}]`]
 
         You can apply classes wherever you would supply properties. This includes in [code `<cla>`] preamble itself! As with a node, the classes should exist for the provided types, the classes are applied left-to-right, then the properties are applied. Lines 3 and 4 are equivalent:
 
-        [code-block
-`<cla .foo text {a=1 b=2}>
-<cla .bar text .foo {b=3 c=4}>
-[text.bar]
-[text {a=1 b=3 c=4}]`]
+        [code-block `<cla .foo text {a=1 b=2}>
+                     <cla .bar text .foo {b=3 c=4}>
+                     [text.bar]
+                     [text {a=1 b=3 c=4}]`]
 
         You can omit any node types. This is a wild card, creating the class for all node types for which the class would be valid (not cause an error). Because of the lack of error messaging upon creation of the class, you might be confused as to why a class wasn't created for a node type. So omit node types  at your own risk (you lazy demon).
 
         In the example below, the class [code `.foo`] is created for type [code code] but not for type [code text] because [code text] doesn't have a main property.
 
-        [code-block
-`<cla .foo {=bar}>
-[code.foo]
-; all good
-
-[text.foo]
-; error: "no class 'foo' for type 'text'"`]
+        [code-block `<cla .foo {=bar}>
+                     [code.foo]
+                     ; all good
+                     
+                     [text.foo]
+                     ; error: "no class 'foo' for type 'text'"`]
 
         Each node type has its own namespace for classes: you can give multiple types distinct classes with the same name. Lines 3 and 4 are equivalent:
 
-        [code-block
-`<cla .foo paragraph {bar}>
-<cla .foo text {baz}>
-[paragraph.foo [text.foo]]
-[paragraph {bar} [text {baz}]]`]
+        [code-block `<cla .foo paragraph {bar}>
+                     <cla .foo text {baz}>
+                     [paragraph.foo [text.foo]]
+                     [paragraph {bar} [text {baz}]]`]
 
         You could expand a class by simultaneously overriding it and using it, like below. Lines 3 and 4 are equivalent.
-        [code-block
-`<cla .foo {bar}>
-<cla .foo .foo {baz}>
-[code.foo]
-[code {bar baz}]`]
+        [code-block `<cla .foo {bar}>
+                     <cla .foo .foo {baz}>
+                     [code.foo]
+                     [code {bar baz}]`]
 
         Ever wanting to do this will make more sense after you've read about [ref {=sec:preamble-scope}the scoping of preamble].
       ]
@@ -683,16 +660,14 @@ bar`]
       [section {id=sec:preamble-def} [\title Default]
         [code `<def>`] is similar to [code `<cla>`], but where a class lets you apply a bunch of properties to a node later, [code `<def>`] will cause a bunch of properties to be applied by default.
 
-        [code-block
-`<def code code-block {=gobbo}>
-An example of [code \`<def>\`]:
-[code-block \`<def code code-block {=gobbo}>\`]`]
+        [code-block `<def code code-block {=gobbo}>
+                     An example of [code \`<def>\`]:
+                     [code-block \`<def code code-block {=gobbo}>\`]`]
 
         is equivalent to
 
-        [code-block
-`An example of [code {=gobbo} \`<def>\`]:
-[code-block {=gobbo} \`<def code code-block {=gobbo}>\`]`]
+        [code-block `An example of [code {=gobbo} \`<def>\`]:
+                     [code-block {=gobbo} \`<def code code-block {=gobbo}>\`]`]
 
         Syntactically the only difference between [code `<cla>`] and [code `<def>`] is the keyword ([code cla] or [code def]) and for [code `<cla>`] you provide a class name after the keyword.
 
@@ -701,37 +676,35 @@ An example of [code \`<def>\`]:
         Note the difference in the below example. The semantics of line 1 are [i create the 'foo' class for all node types; applying the class will give a node these properties]. The semantics of line 2 are [i by default, apply the 'foo' class and these properties to all nodes for which it's possible to do so (in this case: which have a 'foo' class)].
 
         [code-block `<cla .foo {bar}>
-<def .foo {bar}>`]
+                     <def .foo {bar}>`]
       ]
 
       [section {id=sec:preamble-scope} [\title Scope]
         The portion of your document affected by preamble is limited: preamble has a scope. If you put it on top of a file (before any content, remember?) the preamble will be in effect for the entire file; if you put it inside a node, it will be in effect only within that node.
 
-        [code-block
-`<def code-block {=gobbo wrap}>
-[code-block]
-
-[section
-  [section
-    <def code-block {=clojure !wrap}>
-    [code-block]]
-    
-  [code-block]]
-
-[code-block]`]
+        [code-block `<def code-block {=gobbo wrap}>
+                     [code-block]
+                     
+                     [section
+                       [section
+                         <def code-block {=clojure !wrap}>
+                         [code-block]]
+                      
+                      [code-block]]
+                     
+                     [code-block]`]
 
          The example above is equivalent to
 
-         [code-block
-`[code-block {=gobbo wrap}]
-
-[section
-  [section
-    [code-block {=clojure !wrap}]]
-    
-  [code-block {=gobbo wrap}]]
-
-[code-block {=gobbo wrap}]`]
+         [code-block `[code-block {=gobbo wrap}]
+                      
+                      [section
+                        [section
+                          [code-block {=clojure !wrap}]]
+                      
+                        [code-block {=gobbo wrap}]]
+                      
+                      [code-block {=gobbo wrap}]`]
 
         Unlike most programming languages, scopes in Gobbo are not lexical; rather, they are dynamic. This becomes more clear in [ref {=sec:macro-con} section [\number]].
       ]
@@ -766,27 +739,26 @@ An example of [code \`<def>\`]:
 
         You can also provide some [highlight preamble] to the [code con] macro, which will be applied to the bound content.
 
-        [code-block {highlight=2:12-2:25,3:12-3:26} `<con hello [Hello, [con x]!]>
-[con hello <con x [World]>]
-[con hello <con x [Sailor]>]`]
+        [code-block {highlight=2:12-2:25,3:12-3:26}
+         `<con hello [Hello, [con x]!]>
+          [con hello <con x [World]>]
+          [con hello <con x [Sailor]>]`]
 
         Is equivalent to
-        [code-block
-`Hello, World!
-Hello, Sailor!`]
+        [code-block `Hello, World!
+                     Hello, Sailor!`]
 
         The example above shows that preamble scope is not lexical but dynamic. This example makes that more clear:
 
         [code-block {highlight=3\4:12-4:27}
-`<con x [World]>
-<con hello [Hello, [con x]!]>
-[con hello]
-[con hello <con x [Sailor]>]`]
+         `<con x [World]>
+          <con hello [Hello, [con x]!]>
+          [con hello]
+          [con hello <con x [Sailor]>]`]
 
         is equivalent to
-        [code-block
-`Hello, World!
-Hello, Sailor!`]
+        [code-block `Hello, World!
+                     Hello, Sailor!`]
 
         Line 1 binds some content to [code x] in the current [i context].
         
@@ -803,63 +775,60 @@ Hello, Sailor!`]
       [section {id=sec:macro-preamble} [\title Preamble]
         Preamble comes before content, but sometimes you want to apply preamble only to part of your content somewhere in the middle. For example, you mostly write about Gobbo code, but somewhere halfway you have a couple of Clojure code blocks. You could use classes, or instead of writing this:
 
-        [code-block
-`<def code-block {=gobbo}>
-[code-block]
-[code-block {=clojure}]
-[code-block {=clojure}]
-[code-block]`]
+        [code-block `<def code-block {=gobbo}>
+                     [code-block]
+                     [code-block {=clojure}]
+                     [code-block {=clojure}]
+                     [code-block]`]
 
         You could write this:
 
-        [code-block
-`<def code-block {=gobbo}>
-[code-block]
-[<def code-block {=clojure}>
-  [code-block]
-  [code-block]]
-[code-block]`]
+        [code-block `<def code-block {=gobbo}>
+                     [code-block]
+                     [<def code-block {=clojure}>
+                       [code-block]
+                       [code-block]]
+                     [code-block]`]
 
         A node without node type, classes or properties but with preamble before its content is a [i preamble macro]. It expands into its content, but with the preamble applied.
 
         If the content of a preamble macro is pretty small, like it is in the previous example, then it becomes less dangerous to use the wildcard versions of [code `<cla>`] and [code `<def>`] because you can tell at a glance all nodes that are affected:
 
-        [code-block
-`<def code-block {=gobbo}>
-[code-block]
-[<def /* no types: wild! */ {=clojure}>
-  [code-block]
-  [code-block]]
-[code-block]`]
-
-       
+        [code-block `<def code-block {=gobbo}>
+                     [code-block]
+                     [<def /* no types: wild! */ {=clojure}>
+                       [code-block]
+                       [code-block]]
+                     [code-block]`]
       ]
 
       [section {id=sec:macro-include} [\title Include]
 
         Let's say your document's project directory contains these files (and the [directory examples] directory):
 
-        [code-block.no {!line-numbers} [\title doc]
-`main.gobbo
-secondary.gobbo
-examples
-  1.gobbo
-  2.gobbo`]
+        [code-block.no {!line-numbers}
+         [\title doc]
+         `main.gobbo
+          secondary.gobbo
+          examples
+            1.gobbo
+            2.gobbo`]
 
-        [code-block [\title main.gobbo]`[include {=secondary.gobbo}]!
-[include {=examples/1.gobbo}]`]
+        [code-block [\title main.gobbo]
+         `[include {=secondary.gobbo}]!
+          [include {=examples/1.gobbo}]`]
 
-        [code-block [\title secondary.gobbo]`Greetings from secondary`]
+        [code-block [\title secondary.gobbo] `Greetings from secondary`]
 
-        [code-block [\title examples/1.gobbo]`'[include {=2.gobbo}]' and '[include {=../secondary.gobbo}]'`]
+        [code-block [\title examples/1.gobbo]
+         `'[include {=2.gobbo}]' and '[include {=../secondary.gobbo}]'`]
 
         [code-block [\title examples/2.gobbo]`[include {=/secondary.gobbo}]`]
 
         Then [code main.gobbo] would be equivalent to
 
-        [code-block
-`Greeting from secondary!
-'Greetings from secondary' and 'Greetings from secondary'`]
+        [code-block `Greeting from secondary!
+                     'Greetings from secondary' and 'Greetings from secondary'`]
 
         The [code include] macro is similar to the [code `con`] macro in that it expands into content defined elsewhere. In case of [code include], this content is defined in a different file.
 
@@ -874,20 +843,19 @@ examples
         then
 
         [code-block [\title main.gobbo]
-`[include {=hello.gobbo} <con x [World]>]
-[include {=hello.gobbo} <con x [Sailor]>]`]
+        `[include {=hello.gobbo} <con x [World]>]
+         [include {=hello.gobbo} <con x [Sailor]>]`]
 
         would be equivalent to
 
-        [code-block
-`Hello, World!
-Hello, Sailor!`]
+        [code-block `Hello, World!
+                     Hello, Sailor!`]
 
         Not that even without specifying preamble inside the [code include] macro, the context in which [code include] is evaluated is still passed to [directory hello.gobbo]:
 
         [code-block [\title main.gobbo]
-`<con x [World]>
-[include {=hello.gobbo}]`]
+        `<con x [World]>
+         [include {=hello.gobbo}]`]
 
         would be equivalent to
 
@@ -905,25 +873,23 @@ Hello, Sailor!`]
       [section [\title Lines]
          Line semantics are preserved:
         
-        [code-block
-`[list
-  One
-  [<def \item {flag}>
-    [\item Two]
-    [\item Three]
-  Four]`]
+        [code-block `[list
+                      One
+                      [<def \item {flag}>
+                        [\item Two]
+                        [\item Three]
+                      Four]`]
 
         Will result in a list of which the middle two items have the property [code flag] set to [code true].
 
         Beware:
 
-       [code-block
-`[list
-  One
-  [<def \item {flag}>
-    Two
-    Three]
-  Four]`]
+       [code-block `[list
+                     One
+                     [<def \item {flag}>
+                       Two
+                       Three]
+                     Four]`]
 
         Will still result in a list with four items, as expected, but the middle two items will NOT have the property [code flag] set to [code true].
         
@@ -936,7 +902,7 @@ Hello, Sailor!`]
         This is definitely something I want to fix. The intuition of macro is supposed to be that the macro is transparent, like the macro is not really there. Content inside a macro should behave exactly the same is it would outside a macro. 
       ]
 
-      [section [\title Fallback]]
+      _[section [\title Fallback] Not yet implemented]
     ]
   ]
 

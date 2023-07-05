@@ -197,3 +197,31 @@ test("text", () => {
 
   eq(text.content, "foo")
 })
+
+test("escaped text, multiple lines, correct padding", () => {
+  const prec = sut.parse(" `a\n  b`")
+
+  eq(prec.lines.length, 1)
+  eq(prec.lines[0][0].type, 'text/escaped')
+
+  const escaped = <sut.Text_Escaped> prec.lines[0][0];
+
+  eq(escaped.text.content, "a\nb")
+
+  // spaces beyond padding are allowed
+  eq(
+    (<sut.Text_Escaped> sut.parse("`a\n  b`").lines[0][0]).text.content,
+    "a\n b"
+  )
+})
+
+test("escaped text, multiple lines, incorrect padding", () => {
+  try {
+    sut.parse("`a\nb`")
+  } catch (e) {
+    const info = <sut.Parse_error_info> e.info;
+
+    eq(info.expected[0], sut.Concept.Text_Escaped_line_padding)
+    eq(info.got, 'b')
+  }
+})

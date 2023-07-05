@@ -18,6 +18,7 @@ export enum Concept {
   Preamble_element_Class,
   Preamble_element_Default,
   Text_Escaped,
+  Text_Escaped_line_padding,
   Content_Bound,
   Property_value_Bound,
 }
@@ -836,6 +837,22 @@ export function parse(source: string): Pre_content {
               chars.push(cur_c);
               advance();
               continue;
+          }
+        }
+        case "\n": {
+          chars.push(cur_c);
+          advance();
+          
+          const start_column = start[1]
+
+          // expect start_column + 1 whitespaces here.
+          for (let i = 0; i < start_column; i++) {
+            // as any to placate ts
+            if (cur_c as any != " ") {
+              err([Concept.Text_Escaped_line_padding], {got: cur_c})
+            } else {
+              advance()
+            }
           }
         }
         default:

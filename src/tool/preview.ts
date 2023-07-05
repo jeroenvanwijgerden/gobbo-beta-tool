@@ -62,6 +62,8 @@ function parse_concept_to_string(concept: Concept): string {
       return "default preamble";
     case Concept.Text_Escaped:
       return "escaped text";
+    case Concept.Text_Escaped_line_padding:
+      return "escaped text line padding"
     case Concept.Content_Bound:
       return "bound to content";
     case Concept.Property_value_Bound:
