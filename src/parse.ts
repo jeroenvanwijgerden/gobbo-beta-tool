@@ -842,18 +842,21 @@ export function parse(source: string): Pre_content {
         case "\n": {
           chars.push(cur_c);
           advance();
-          
-          const start_column = start[1]
 
-          // expect start_column + 1 whitespaces here.
+          // start[0] is the opening `
+          const start_column = start[1];
+
+          // expect start_column whitespaces here.
           for (let i = 0; i < start_column; i++) {
             // as any to placate ts
             if (cur_c as any != " ") {
-              err([Concept.Text_Escaped_line_padding], {got: cur_c})
+              err([Concept.Text_Escaped_line_padding], { got: cur_c });
             } else {
-              advance()
+              advance();
             }
           }
+
+          continue;
         }
         default:
           chars.push(cur_c);
@@ -1174,5 +1177,3 @@ export function parse(source: string): Pre_content {
 
   return main();
 }
-
-parse("[terminal {path=/foo/}]");

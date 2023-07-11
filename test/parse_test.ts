@@ -225,3 +225,10 @@ test("escaped text, multiple lines, incorrect padding", () => {
     eq(info.got, 'b')
   }
 })
+
+test("escaped text, padding with intermediate empty line", () => {
+  const prec = sut.parse("`a\n \n b`")
+  const escaped = <sut.Text_Escaped> prec.lines[0][0];
+  
+  eq(escaped.text.content, 'a\n\nb')
+})
